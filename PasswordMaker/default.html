@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>PasswordMaker</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.2.0/css/ui-light.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
+
+    <!-- PasswordMaker references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/aes.js"></script>
+    <script src="/js/passwordmaker.js"></script>
+    <script src="/js/md4.js"></script>
+    <script src="/js/md5.js"></script>
+    <script src="/js/md5_v6.js"></script>
+    <script src="/js/sha256.js"></script>
+    <script src="/js/sha1.js"></script>
+    <script src="/js/ripemd160.js"></script>
+    <script src="/js/l33t.js"></script>
+    <script src="/js/cookie.js"></script>
+    <script src="/js/hashutils.js"></script>
+    <script src="/js/select.js"></script>
+    <script src="/js/bodyShow.js"></script>
+    <script src="/js/default.js"></script>
+</head>
+<body>
+    <h1 class="headerClass">PasswordMaker</h1>
+    <div class="mainContent">
+		<p>Profile
+		<select id="profileLB" name="profile" class="editable">
+			<option value="!!!edit!!!" class="activeEdit">Default</option>
+		</select></p>
+        <p>Input URL
+            <input id="preURL" type="text" />
+			<button id="copyFromClipboard">Copy URL from Clipboard</button>
+			</p>
+		<p>Master Password
+        <input id="passwdMaster" type="password" /> <button id="saveMasterBtn">Save Master Password</button></p>
+		
+		<p>Use l33t
+		<select class="dropmenu" id="whereLeetLB">
+			<option value="off">not at all</option>
+			<option value="before-hashing">before generating password</option>
+			<option value="after-hashing">after generating password</option>
+			<option value="both">before and after generating password</option>
+		</select>
+		l33t level
+		<select class="dropmenu" id="leetLevelLB">
+<option value="0">1</option>
+<option value="1">2</option>
+<option value="2">3</option>
+<option value="3">4</option>
+<option value="4">5</option>
+<option value="5">6</option>
+<option value="6">7</option>
+<option value="7">8</option>
+<option value="8">9</option>
+</select>
+		</p>
+
+		<p>Hash Algorithm
+		<select class="dropmenu" id="hashAlgorithmLB">
+<option value="md4">MD4</option>
+<option value="hmac-md4">HMAC-MD4</option>
+<option value="md5">MD5</option>
+<option value="md5_v6">MD5 Version 0.6</option>
+<option value="hmac-md5">HMAC-MD5</option>
+<option value="hmac-md5_v6">HMAC-MD5 Version 0.6</option>
+<option value="sha1">SHA-1</option>
+<option value="hmac-sha1">HMAC-SHA-1</option>
+<option value="sha256">SHA-256</option>
+<option value="hmac-sha256_fix">HMAC-SHA-256</option>
+<option value="hmac-sha256">HMAC-SHA-256 Version 1.5.1</option>
+<option value="rmd160">RIPEMD-160</option>
+<option value="hmac-rmd160">HMAC-RIPEMD-160</option>
+</select>
+		</p>
+		<p>URL Components
+		<input type="checkbox" id="protocolCB" />Protocol
+<input type="checkbox" id="subdomainCB" />Subdomain(s)
+<input type="checkbox" id="domainCB"  status="checked"/>Domain
+<input type="checkbox" id="pathCB" />Port, path, anchor, query parameters
+		</p>
+		<p>Using text
+		<input id="passwdUrl" type="text" /></p>
+
+		<p>Length of Generated Password
+		<input class="standard" id="passwdLength" maxlength="3" size="3" value="12"/>
+        Username
+            <input class="standard" id="usernameTB"/>
+		Modifier
+		<input class="standard" id="counter"/></p>
+		<p>
+		Characters
+		<select id="charset" name="charset" class="editable">
+<option value="!!!edit!!!" class="activateEdit">Edit Character Set</option>
+<option selected="selected">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
+				<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</option>
+				<option>0123456789abcdef</option>
+				<option>0123456789</option>
+				<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</option>
+				<option>`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
+			</select>
+            <span id="charMinWarning" style="display: none;">Two character minimum required</span>
+		</p>
+		<p>
+			Password Prefix
+			<input class="standard" id="passwordPrefix" />
+			Password Suffix
+		    <input class="standard" id="passwordSuffix" />
+		</p>
+		<p>Generated Password
+			<input class="standard" type="text" id="passwdGenerated" />
+			<input type="checkbox" id="ifHidePasswd"/>Make password invisible (Highlight to view)
+        </p>
+		<p>
+		<button id="copyToClipboardButton">Copy Password to Clipboard</button>
+		</p>
+    </div>
+	</body>
+</html>
