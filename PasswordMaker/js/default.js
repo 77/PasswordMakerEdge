@@ -128,7 +128,6 @@
         if (dataPackageView.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.text)) {
             dataPackageView.getTextAsync().then(function (text) {
                 preURL.innerText = text;
-
             });
         }
     }
