@@ -29,25 +29,37 @@
 <body>
     <h1 class="headerClass">PasswordMaker</h1>
     <div class="mainContent">
-		<p>Profile
+		<p><label class="noWrap">Profile
 		<select id="profileLB" name="profile" class="editable">
 			<option value="!!!edit!!!" class="activeEdit">Default</option>
-		</select></p>
-        <p>Input URL
+		</select></label></p>
+		<p><label class="noWrap">Master Password
+        <input id="passwdMaster" type="password" /> <button id="saveMasterBtn">Save Master Password</button></label></p>
+		<fieldset id="urlparts">
+		<legend>URL Components</legend>
+
+        <p><label class="noWrap">Input URL
             <input id="preURL" type="text" />
 			<button id="copyFromClipboard">Copy URL from Clipboard</button>
-			</p>
-		<p>Master Password
-        <input id="passwdMaster" type="password" /> <button id="saveMasterBtn">Save Master Password</button></p>
+			</label></p>
+		<p>
+		<label class="noWrap"><input type="checkbox" id="protocolCB" />Protocol</label>
+		<label class="noWrap"><input type="checkbox" id="subdomainCB" />Subdomain(s)</label>
+		<label class="noWrap"><input type="checkbox" id="domainCB"  status="checked"/>Domain</label>
+		<label class="noWrap"><input type="checkbox" id="pathCB" />Port, path, anchor, query parameters</label>
+		</p>
+		<p><label class="noWrap">Using text
+		<input id="passwdUrl" type="text" /></label></p>
+		</fieldset>
 		
-		<p>Use l33t
+		<p><label class="noWrap">Use l33t
 		<select class="dropmenu" id="whereLeetLB">
 			<option value="off">not at all</option>
 			<option value="before-hashing">before generating password</option>
 			<option value="after-hashing">after generating password</option>
 			<option value="both">before and after generating password</option>
-		</select>
-		l33t level
+		</select></label>
+		<label class="noWrap">l33t level
 		<select class="dropmenu" id="leetLevelLB">
 <option value="0">1</option>
 <option value="1">2</option>
@@ -58,10 +70,8 @@
 <option value="6">7</option>
 <option value="7">8</option>
 <option value="8">9</option>
-</select>
-		</p>
-
-		<p>Hash Algorithm
+</select></label>
+		<label class="noWrap">Hash Algorithm
 		<select class="dropmenu" id="hashAlgorithmLB">
 <option value="md4">MD4</option>
 <option value="hmac-md4">HMAC-MD4</option>
@@ -76,24 +86,15 @@
 <option value="hmac-sha256">HMAC-SHA-256 Version 1.5.1</option>
 <option value="rmd160">RIPEMD-160</option>
 <option value="hmac-rmd160">HMAC-RIPEMD-160</option>
-</select>
+</select></label>
 		</p>
-		<p>URL Components
-		<input type="checkbox" id="protocolCB" />Protocol
-<input type="checkbox" id="subdomainCB" />Subdomain(s)
-<input type="checkbox" id="domainCB"  status="checked"/>Domain
-<input type="checkbox" id="pathCB" />Port, path, anchor, query parameters
-		</p>
-		<p>Using text
-		<input id="passwdUrl" type="text" /></p>
-
-		<p>Length of Generated Password
-		<input class="standard" id="passwdLength" maxlength="3" size="3" value="12"/>
-        Username
-            <input class="standard" id="usernameTB"/>
-		Modifier
-		<input class="standard" id="counter"/></p>
-		<p>
+		<p><label class="noWrap">Length of Generated Password
+		<input class="standard" id="passwdLength" maxlength="3" size="3" value="12"/></label>
+        <label class="noWrap">Username
+            <input class="standard" id="usernameTB"/></label>
+		<label class="noWrap">Modifier
+		<input class="standard" id="counter"/></label></p>
+		<p><label>
 		Characters
 		<select id="charset" name="charset" class="editable">
 <option value="!!!edit!!!" class="activateEdit">Edit Character Set</option>
@@ -104,17 +105,18 @@
 				<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</option>
 				<option>`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
 			</select>
+			</label>
             <span id="charMinWarning" style="display: none;">Two character minimum required</span>
 		</p>
-		<p>
+		<p><label class="noWrap">
 			Password Prefix
-			<input class="standard" id="passwordPrefix" />
-			Password Suffix
-		    <input class="standard" id="passwordSuffix" />
+			<input class="standard" id="passwordPrefix" /></label>
+			<label class="noWrap">Password Suffix
+		    <input class="standard" id="passwordSuffix" /></label>
 		</p>
-		<p>Generated Password
-			<input class="standard" type="text" id="passwdGenerated" />
-			<input type="checkbox" id="ifHidePasswd"/>Make password invisible (Highlight to view)
+		<p><label class="noWrap">Generated Password
+			<input class="standard" type="text" id="passwdGenerated" /></label>
+			<label class="noWrap"><input type="checkbox" id="ifHidePasswd"/>Make password invisible (Highlight to view)</label>
         </p>
 		<p>
 		<button id="copyToClipboardButton">Copy Password to Clipboard</button>
