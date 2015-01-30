@@ -6,8 +6,6 @@
     var app = WinJS.Application;
     var activation = Windows.ApplicationModel.Activation;
 
-    app.on
-
     app.onactivated = function (args) {
 
         if (args.detail.kind === activation.ActivationKind.launch) {
@@ -170,6 +168,14 @@
                     ifHidePasswd.addEventListener("change", ifHidePasswdHandler, false);
 
                     copyToClipboardButton.addEventListener("click", copyToClipboardHandler, false);
+
+                    // Populate Settings pane and tie commands to Settings flyouts.
+                    WinJS.Application.onsettings = function (e) {
+                        e.detail.applicationcommands = {
+                            "helpDiv": { href: "HelpUI.html", title: "Help" }
+                        };
+                        WinJS.UI.SettingsFlyout.populateSettings(e);
+                    }
                 }
             ));
         }

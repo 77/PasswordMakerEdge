@@ -11,3 +11,13 @@
     margin-left: 120px;
     margin-bottom: 50px; 
 }
+
+.header {
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.body {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Help Settings flyout</title>
+</head>
+<body>
+    <!-- BEGINTEMPLATE: Template code for an empty Help flyout. -->
+    <!-- Each Settings flyout should be defined in its own HTML file. -->
+    <!-- Set data-win-options="{settingsCommandId:'helpDiv', width:'wide'}" to create
+         a wide flyout. -->
+    <!-- Set the background color for the header to the background color defined
+         for your app tile in the manifest. -->
+    <div data-win-control="WinJS.UI.SettingsFlyout"
+         data-win-options="{settingsCommandId:'helpDiv', width:'wide'}">
+        <div class="win-ui-dark win-header" title="Help">
+            <button type="button"
+                    onclick="WinJS.UI.SettingsFlyout.show()"
+                    class="win-backbutton"></button>
+            <div class="win-label">Help</div>
+        </div>
+        <div class="win-content">
+            <!-- Help content here -->
+            <div class="header">PasswordMaker.  One Password To Rule Them All.&trade;</div class="">
+            <div class="body">http://passwordmaker.org/</div>
+            <div class="body">Copyright 2015 Graham Benton</div>
+            <div class="body">All Rights Reserved</div>
+            <div class="body">This uses the Javascript libraries copied from http://passwordmaker.org/passwordmaker.html on
+            28th January 2015.  There is  no version identification in the files, but I'm lead to believe it is v2.5</div>
+
+            <div class="header" id="licenseHeader">License</div>
+                <div class="body">
+                    This library is free software; you can redistribute it and/or modify it
+                    under the terms of the GNU Lesser General Public License as published by
+                    the Free Software Foundation; either version 2.1 of the License, or (at
+                    your option) any later version.
+                </div>
+
+            <div class="body">
+                This library is distributed in the hope that it will be useful, but WITHOUT
+                ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+                FITNESSFOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+                for more details.
+            </div>
+            <div class="body">
+                You should have received a copy of the GNU Lesser General Public License
+                along with this library; if not, write to the Free Software Foundation,
+                Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+            </div>
+            <div class="header">Authors</div>
+            <div class="body">
+                <div>
+                    Graham Benton - gpbenton@live.com - Windows 8 UI
+				</div>
+				<div>
+                    For Online PasswordMaker authors see https://github.com/passwordmaker/online-passwordmaker/graphs/contributors
+				</div>
+            </div>
+        </div>
+    </div>
+    <!-- ENDTEMPLATE -->
+</body>
+</html>
