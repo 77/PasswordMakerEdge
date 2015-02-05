@@ -1,4 +1,8 @@
 ﻿body {
+	overflow-x:hidden;
+	overflow-y:scroll;
+    display: -ms-flexbox;
+    -ms-flex-direction:column;
 }
 
 .headerClass {
@@ -24,4 +28,8 @@
 
 .noWrap {
 	white-space:nowrap;	
+}
+
+select {
+	max-width: 97%;
 }

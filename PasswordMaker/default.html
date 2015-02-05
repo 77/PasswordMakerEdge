@@ -32,8 +32,8 @@
 		<p><label class="noWrap">Profile
 		<select id="profileLB" name="profile" class="editable">
 			<option value="!!!edit!!!" class="activeEdit">Default</option>
-		</select></label></p>
-		<p><label class="noWrap">Master Password
+		</select></label> 
+		<label class="noWrap">Master Password
         <input id="passwdMaster" type="password" /> <button id="saveMasterBtn">Save Master Password</button></label></p>
 		<fieldset id="urlparts">
 		<legend>URL Components</legend>
@@ -51,7 +51,8 @@
 		<p><label class="noWrap">Using text
 		<input id="passwdUrl" type="text" /></label></p>
 		</fieldset>
-		
+		<fieldset>
+			<legend>Encryption</legend>
 		<p><label class="noWrap">Use l33t
 		<select class="dropmenu" id="whereLeetLB">
 			<option value="off">not at all</option>
@@ -87,14 +88,20 @@
 <option value="rmd160">RIPEMD-160</option>
 <option value="hmac-rmd160">HMAC-RIPEMD-160</option>
 </select></label>
-		</p>
+		</p></fieldset>
+		<fieldset>
 		<p><label class="noWrap">Length of Generated Password
 		<input class="standard" id="passwdLength" maxlength="3" size="3" value="12"/></label>
         <label class="noWrap">Username
             <input class="standard" id="usernameTB"/></label>
 		<label class="noWrap">Modifier
 		<input class="standard" id="counter"/></label></p>
-		<p><label>
+		<p><label class="noWrap">
+			Password Prefix
+			<input class="standard" id="passwordPrefix" /></label>
+			<label class="noWrap">Password Suffix
+		    <input class="standard" id="passwordSuffix" /></label>
+		</p>		<p><label>
 		Characters
 		<select id="charset" name="charset" class="editable">
 <option value="!!!edit!!!" class="activateEdit">Edit Character Set</option>
@@ -108,12 +115,7 @@
 			</label>
             <span id="charMinWarning" style="display: none;">Two character minimum required</span>
 		</p>
-		<p><label class="noWrap">
-			Password Prefix
-			<input class="standard" id="passwordPrefix" /></label>
-			<label class="noWrap">Password Suffix
-		    <input class="standard" id="passwordSuffix" /></label>
-		</p>
+		</fieldset>
 		<p><label class="noWrap">Generated Password
 			<input class="standard" type="text" id="passwdGenerated" /></label>
 			<label class="noWrap"><input type="checkbox" id="ifHidePasswd"/>Hide password (Highlight to view)</label>
