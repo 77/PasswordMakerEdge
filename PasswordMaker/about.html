@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <!-- BEGINTEMPLATE: Template code for an empty Help flyout. -->
+    <!-- Each Settings flyout should be defined in its own HTML file. -->
+    <!-- Set data-win-options="{settingsCommandId:'helpDiv', width:'wide'}" to create
+         a wide flyout. -->
+    <!-- Set the background color for the header to the background color defined
+         for your app tile in the manifest. -->
+    <div data-win-control="WinJS.UI.SettingsFlyout"
+         data-win-options="{settingsCommandId:'aboutDiv', width:'wide'}">
+        <div class="win-ui-dark win-header" title="About">
+            <button type="button"
+                    onclick="WinJS.UI.SettingsFlyout.show()"
+                    class="win-backbutton"></button>
+            <div class="win-label">About</div>
+        </div>
+        <div class="win-content">
+            <h3>PasswordMaker Win 8 v1.0b1</h3>
+            <p>A version of passwordmaker as a Windows 8 app</p>
+            <p >Copyright 2015 Graham Benton.  All Rights Reserved.</p>
+            <p>This application is free software, please read the License flyout.</p>
+            <h3>Authors</h3>
+            <p class="body">
+                <div>
+                    Graham Benton - gpbenton@live.com - Windows 8 UI
+                </div>
+                <div>
+                    For Online PasswordMaker authors see https://github.com/passwordmaker/online-passwordmaker/graphs/contributors
+                </div>
+            </p>
+                </div>
+    </div>
+    <!-- ENDTEMPLATE -->
+</body>
+</html>
