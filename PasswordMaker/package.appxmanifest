@@ -22,6 +22,14 @@
           <m2:Rotation Preference="landscape" />
         </m2:InitialRotationPreference>
       </m2:VisualElements>
+      <Extensions>
+        <Extension Category="windows.shareTarget">
+          <ShareTarget m2:Description="Text or URI from which password is generated.">
+            <DataFormat>Text</DataFormat>
+            <DataFormat>WebLink</DataFormat>
+          </ShareTarget>
+        </Extension>
+      </Extensions>
     </Application>
   </Applications>
   <Capabilities>
