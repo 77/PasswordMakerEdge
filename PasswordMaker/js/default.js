@@ -98,8 +98,23 @@
                     counter.innerText = WinJS.Application.sessionState.counter;
                 }
 
-                if (WinJS.Application.sessionState.charset) {
-                    charset.selectedIndex = WinJS.Application.sessionState.charset;
+                if (WinJS.Application.sessionState.charsetIndex) {
+                    var newCharOptions = WinJS.Application.sessionState.newCharOptions;
+
+                    var charset = document.getElementById("charset");
+                    var charsetOpts = charset.options;
+
+                    if (newCharOptions) {
+                        for (var i = 0; i < newCharOptions.length; i++) {
+                            charsetOpts[charsetOpts.length] = new Option(newCharOptions[i]);
+                        }
+                    }
+
+                    charset.selectedIndex = WinJS.Application.sessionState.charsetIndex;
+                    if (charset.selectedIndex > charset.options.length || charset.selectedIndex < 0) {
+                        charset.selectedIndex = 1;
+                    }
+
                 }
 
                 if (WinJS.Application.sessionState.passwordPrefix) {
@@ -192,8 +207,6 @@
         counter.addEventListener("keypress", preGeneratePassword, false);
         counter.addEventListener("input", preGeneratePassword, false);
 
-        charset.addEventListener("change", charsetHandler, false);
-
         passwordPrefix.addEventListener("change", passwordPrefixHandler, false);
         passwordPrefix.addEventListener("keyup", preGeneratePassword, false);
         passwordPrefix.addEventListener("keydown", preGeneratePassword, false);
@@ -229,6 +242,19 @@
         // saved and restored across suspension. If you need to complete an
         // asynchronous operation before your application is suspended, call
         // args.setPromise().
+
+        // Because the EditSelect class deletes and recreates the select
+        // option, we cannot attach an event handler to it, so 
+        // save its state here.
+        WinJS.Application.sessionState.charsetIndex = document.getElementById("charset").selectedIndex;
+        var charsetOptions = document.getElementById("charset").options;
+        var newCharOptions = [];
+
+        for (var i = 7,j=0; i < charsetOptions.length; i++,j++) {
+            newCharOptions[j] = document.getElementById("charset").options[i].text;
+        }
+        WinJS.Application.sessionState.newCharOptions = newCharOptions;
+
     };
 
     function whereLeetLBHandler(eventInfo) {
@@ -350,14 +376,7 @@
 
         WinJS.Application.sessionState.counter = counter.value;
     }
-
-    function charsetHandler(eventInfo) {
-        preGeneratePassword();
-
-        WinJS.Application.sessionState.charset = charset.selectedIndex;
-
-    }
-
+    
     function passwordPrefixHandler(eventInfo) {
         preGeneratePassword();
 

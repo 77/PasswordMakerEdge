@@ -29,19 +29,21 @@
 <body>
     <h1 class="headerClass">PasswordMaker</h1>
     <div class="mainContent">
-		<p><label class="noWrap">Profile
+		<p><label class="noWrap" style="display:none">Profile
 		<select id="profileLB" name="profile" class="editable">
 			<option value="!!!edit!!!" class="activeEdit">Default</option>
 		</select></label> 
 		<label class="noWrap">Master Password
-        <input id="passwdMaster" type="password" /> <button id="saveMasterBtn">Save Master Password</button></label></p>
+        <input id="passwdMaster" type="password" /> <button id="saveMasterBtn" style="display:none; ">Save Master Password</button></label></p>
 		<fieldset id="urlparts">
 		<legend>URL Components</legend>
 
-        <p><label class="noWrap">Input URL
-            <input id="preURL" type="text" />
+        <p>
+			<label class="noWrap">Input URL
+              <input id="preURL" type="text" />
+			</label>
 			<button id="copyFromClipboard">Copy URL from Clipboard</button>
-			</label></p>
+		</p>
 		<p>
 		<label class="noWrap"><input type="checkbox" id="protocolCB" />Protocol</label>
 		<label class="noWrap"><input type="checkbox" id="subdomainCB" />Subdomain(s)</label>
@@ -90,20 +92,17 @@
 </select></label>
 		</p></fieldset>
 		<fieldset>
-		<p><label class="noWrap">Length of Generated Password
-		<input class="standard" id="passwdLength" maxlength="3" size="3" value="12"/></label>
-        <label class="noWrap">Username
-            <input class="standard" id="usernameTB"/></label>
-		<label class="noWrap">Modifier
-		<input class="standard" id="counter"/></label></p>
-		<p><label class="noWrap">
-			Password Prefix
-			<input class="standard" id="passwordPrefix" /></label>
-			<label class="noWrap">Password Suffix
-		    <input class="standard" id="passwordSuffix" /></label>
-		</p>		<p><label>
-		Characters
-		<select id="charset" name="charset" class="editable">
+					<legend>Generated Password Modifiers</legend>
+
+		<p>
+			<label class="noWrap">Length <input class="standard" id="passwdLength" maxlength="3" size="3" value="12"/></label>
+            <label class="noWrap">Username <input class="standard" id="usernameTB"/></label>
+		    <label class="noWrap">Modifier <input class="standard" id="counter"/></label>
+		    <label class="noWrap">Prefix <input class="standard" id="passwordPrefix" /></label>
+		    <label class="noWrap">Suffix <input class="standard" id="passwordSuffix" /></label>
+		</p>
+		<p>
+			<label>Characters <select id="charset" class="editable" onchange="preGeneratePassword();">
 <option value="!!!edit!!!" class="activateEdit">Edit Character Set</option>
 <option selected="selected">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
 				<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</option>

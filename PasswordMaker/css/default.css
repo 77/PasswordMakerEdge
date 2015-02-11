@@ -33,3 +33,10 @@
 select {
 	max-width: 97%;
 }
+
+/* Reduce the left margin in portrait mode */
+@media screen and (orientation:portrait) {
+	.mainContent, .headerClass {
+		margin-left:60px;
+	}
+}
