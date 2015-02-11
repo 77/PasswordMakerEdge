@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:build="http://schemas.microsoft.com/developer/appx/2012/build" IgnorableNamespaces="build">
-  <Identity Name="84e6755f-6392-4390-9104-4a94e0270d88" Version="1.0.0.0" Publisher="CN=Graham" />
+  <Identity Name="56792GrahamBenton.PasswordMakerModern" Version="1.1.0.0" Publisher="CN=D0AB25A4-5ED9-4220-B437-4F9DBF550BB1" />
   <Properties>
-    <DisplayName>PasswordMaker</DisplayName>
-    <PublisherDisplayName>Graham</PublisherDisplayName>
+    <DisplayName>PasswordMaker Modern</DisplayName>
+    <PublisherDisplayName>Graham Benton</PublisherDisplayName>
     <Logo>images\storelogo.png</Logo>
   </Properties>
   <Prerequisites>
@@ -16,7 +16,7 @@
   <Applications>
     <Application Id="App" StartPage="default.html">
       <m2:VisualElements DisplayName="PasswordMaker Modern" Description="PasswordMaker.  One password to rule them all." ForegroundText="dark" BackgroundColor="#ffffff" Square150x150Logo="images\Logo.png" Square30x30Logo="images\SmallLogo.png">
-        <m2:DefaultTile Square70x70Logo="images\Square70x70Logo.png" Wide310x150Logo="images\Wide310x150Logo.png" Square310x310Logo="images\Square310x310Logo.png" ShortName="PasswordMaker" DefaultSize="square150x150Logo">
+        <m2:DefaultTile Square70x70Logo="images\Square70x70Logo.png" Square310x310Logo="images\Square310x310Logo.png" ShortName="PasswordMaker" DefaultSize="square150x150Logo" Wide310x150Logo="images\Wide310x150Logo.png">
           <m2:ShowNameOnTiles>
             <m2:ShowOn Tile="square150x150Logo" />
             <m2:ShowOn Tile="wide310x150Logo" />
