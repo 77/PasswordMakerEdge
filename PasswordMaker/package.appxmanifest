@@ -15,12 +15,16 @@
   </Resources>
   <Applications>
     <Application Id="App" StartPage="default.html">
-      <m2:VisualElements DisplayName="PasswordMaker" Description="PasswordMaker" ForegroundText="light" BackgroundColor="#464646" Square150x150Logo="images\Logo.png" Square30x30Logo="images\SmallLogo.png">
-        <m2:SplashScreen Image="images\splashscreen.png" />
+      <m2:VisualElements DisplayName="PasswordMaker" Description="PasswordMaker.  One password to rule them all." ForegroundText="dark" BackgroundColor="#ffffff" Square150x150Logo="images\Logo.png" Square30x30Logo="images\SmallLogo.png">
+        <m2:DefaultTile Square70x70Logo="images\Square70x70Logo.png" Wide310x150Logo="images\Wide310x150Logo.png" Square310x310Logo="images\Square310x310Logo.png" ShortName="PasswordMaker" DefaultSize="square150x150Logo">
+          <m2:ShowNameOnTiles>
+            <m2:ShowOn Tile="square150x150Logo" />
+            <m2:ShowOn Tile="wide310x150Logo" />
+            <m2:ShowOn Tile="square310x310Logo" />
+          </m2:ShowNameOnTiles>
+        </m2:DefaultTile>
+        <m2:SplashScreen Image="images\splashscreen.png" BackgroundColor="#ffffff" />
         <m2:ApplicationView MinWidth="default" />
-        <m2:InitialRotationPreference>
-          <m2:Rotation Preference="landscape" />
-        </m2:InitialRotationPreference>
       </m2:VisualElements>
       <Extensions>
         <Extension Category="windows.shareTarget">
@@ -32,9 +36,6 @@
       </Extensions>
     </Application>
   </Applications>
-  <Capabilities>
-    <Capability Name="internetClient" />
-  </Capabilities>
   <build:Metadata>
     <build:Item Name="Blend" Version="12.0.51020.0" />
   </build:Metadata>
