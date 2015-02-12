@@ -29,12 +29,17 @@
 <body>
     <h1 class="headerClass">PasswordMaker</h1>
     <div class="mainContent">
-		<p><label class="noWrap" style="display:none">Profile
-		<select id="profileLB" name="profile" class="editable">
-			<option value="!!!edit!!!" class="activeEdit">Default</option>
-		</select></label> 
-		<label class="noWrap">Master Password
-        <input id="passwdMaster" type="password" /> <button id="saveMasterBtn" style="display:none; ">Save Master Password</button></label></p>
+		<p>
+		    <label class="noWrap">Master Password
+            <input id="passwdMaster" type="password" /> <button id="saveMasterBtn" style="display:none; ">Save Master Password</button></label>
+            <label class="noWrap">
+                Profile
+                <select id="profileLB" name="profile" class="editable">
+                    <option value="!!!edit!!!" class="activateEdit">New Profile</option>
+                </select>
+            </label> 
+            <button id="saveProfileBtn">Save Profile</button>
+        </p>
 		<fieldset id="urlparts">
 		<legend>URL Components</legend>
 

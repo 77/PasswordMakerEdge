@@ -24,12 +24,15 @@
 //(D) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
-(function () {
+(function mydefault() {
     "use strict";
 
     var app = WinJS.Application;
     var activation = Windows.ApplicationModel.Activation;
     var shareOperation = null;
+
+    // UI created by us
+    var saveProfileBtn;
 
     app.onactivated = function (args) {
 
@@ -165,6 +168,9 @@
         passwdMaster.addEventListener("keydown", preGeneratePassword, false);
         passwdMaster.addEventListener("keypress", preGeneratePassword, false);
         passwdMaster.addEventListener("input", preGeneratePassword, false);
+        
+        document.getElementById("profileLB").onchange = loadProfileFromRemote;
+        addProfiles();
 
         saveMasterBtn.addEventListener("click", saveMaster, false);
 
@@ -222,6 +228,9 @@
         ifHidePasswd.addEventListener("change", ifHidePasswdHandler, false);
 
         copyToClipboardButton.addEventListener("click", copyToClipboardHandler, false);
+
+        saveProfileBtn = document.getElementById("saveProfileBtn");
+        saveProfileBtn.addEventListener("click", saveProfileHandler, false);
 
         // Populate Settings pane and tie commands to Settings flyouts.
         WinJS.Application.onsettings = function (e) {
@@ -388,6 +397,91 @@
         preGeneratePassword();
 
         WinJS.Application.sessionState.passwordSuffix = passwordSuffix.value;
+    }
+
+    function saveProfileHandler(eventInfo) {
+
+        var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
+
+        roamingSettings.createContainer("Profiles",
+            Windows.Storage.ApplicationDataCreateDisposition.Always);
+
+        var profileIndex = document.getElementById("profileLB").selectedIndex;
+        var selectedProfile = document.getElementById("profileLB").options[profileIndex].text;
+
+        roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)] = exportPreferences();
+
+    }
+
+    function addProfiles() {
+        var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
+
+        if (roamingSettings.containers.hasKey("Profiles")) {
+
+            var iterator = roamingSettings.containers.lookup("Profiles").values.first();
+
+            while (iterator.hasCurrent) {
+                var profileName = unescape(iterator.current.key);
+                removeProfile(profileName);
+                //EditableSelect.selectAddOption(profileLB, new Option(profileName));
+                document.getElementById("profileLB").add(new Option(profileName));
+                iterator.moveNext();
+            }
+        } else {
+            profileListArray = new Array("Default");
+
+            var option = document.createElement("option");
+            option.text = "Default";
+            EditableSelect.selectAddOption(document.getElementById("profileLB"), option);
+            option.selected = "selected";
+        }
+    }
+
+    function removeProfile(profileName) {
+
+        var profileLB = document.getElementById("profileLB");
+
+        for (var i = 0; i < profileLB.length; i++) {
+            if (profileLB.options[i].text == profileName) {
+                profileLB.remove(i);
+                break;
+            }
+        }
+    }
+
+    function loadProfileFromRemote() {
+
+        var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
+        if (roamingSettings.containers.hasKey("Profiles")) {
+
+            var profileLB = document.getElementById("profileLB");
+
+            if (profileLB) {
+                var profileIndex = profileLB.selectedIndex;
+                var selectedProfile = profileLB.options[profileIndex].text;
+
+                var a = unescape(roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)]);
+
+                var settingsArray = a.split("|");
+                preUrl.value = (settingsArray[0] == undefined || settingsArray[6] == undefined) ? "" : unescape(settingsArray[0]);
+                passwdLength.value = (settingsArray[1] == undefined || settingsArray[1] == undefined) ? "8" : settingsArray[1];
+                protocolCB.checked = (settingsArray[2] == undefined || settingsArray[2] == undefined) ? false : settingsArray[2] == "true";
+                domainCB.checked = (settingsArray[3] == undefined || settingsArray[3] == undefined) ? true : settingsArray[3] == "true";
+                subdomainCB.checked = (settingsArray[4] == undefined || settingsArray[4] == undefined) ? false : settingsArray[4] == "true";
+                pathCB.checked = (settingsArray[5] == undefined || settingsArray[5] == undefined) ? false : settingsArray[5] == "true";
+                passwdUrl.value = (settingsArray[6] == undefined || settingsArray[6] == undefined) ? "" : unescape(settingsArray[6]);
+                leetLevelLB.value = (settingsArray[7] == undefined || settingsArray[7] == undefined) ? "0" : settingsArray[7];
+                hashAlgorithmLB.value = (settingsArray[8] == undefined || settingsArray[8] == undefined) ? "md5" : settingsArray[8];
+                whereLeetLB.value = (settingsArray[9] == undefined || settingsArray[9] == undefined) ? "off" : settingsArray[9];
+                usernameTB.value = (settingsArray[10] == undefined || settingsArray[10] == undefined) ? "" : unescape(settingsArray[10]);
+                counter.value = (settingsArray[11] == undefined || settingsArray[11] == undefined) ? "" : unescape(settingsArray[11]);
+                EditableSelect.setValue(document.getElementById("charset"), (settingsArray[12] == undefined || settingsArray[12] == undefined) ? base93 : unescape(settingsArray[12]));
+                passwordPrefix.value = (settingsArray[13] == undefined || settingsArray[13] == undefined) ? "" : unescape(settingsArray[13]);
+                passwordSuffix.value = (settingsArray[14] == undefined || settingsArray[14] == undefined) ? "" : unescape(settingsArray[14]);
+                preGeneratePassword();
+            }
+        }
+
     }
 
     /// <summary> 

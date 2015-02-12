@@ -34,6 +34,11 @@ select {
 	max-width: 97%;
 }
 
+option.activateEdit{
+    font-style:italic;
+    color:#800;
+}
+
 /* Reduce the left margin in portrait mode */
 @media screen and (orientation:portrait) {
 	.mainContent, .headerClass {
