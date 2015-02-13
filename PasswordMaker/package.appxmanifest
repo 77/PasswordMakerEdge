@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:build="http://schemas.microsoft.com/developer/appx/2012/build" IgnorableNamespaces="build">
-  <Identity Name="56792GrahamBenton.PasswordMakerModern" Version="1.1.0.0" Publisher="CN=D0AB25A4-5ED9-4220-B437-4F9DBF550BB1" />
+  <Identity Name="56792GrahamBenton.PasswordMakerModern" Version="2.0.0.0" Publisher="CN=D0AB25A4-5ED9-4220-B437-4F9DBF550BB1" />
   <Properties>
     <DisplayName>PasswordMaker Modern</DisplayName>
     <PublisherDisplayName>Graham Benton</PublisherDisplayName>

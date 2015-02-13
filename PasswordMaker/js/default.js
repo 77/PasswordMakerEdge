@@ -24,7 +24,7 @@
 //(D) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.
 //(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
-(function mydefault() {
+(function () {
     "use strict";
 
     var app = WinJS.Application;
@@ -33,6 +33,7 @@
 
     // UI created by us
     var saveProfileBtn;
+    var deleteProfileBtn;
 
     app.onactivated = function (args) {
 
@@ -47,6 +48,11 @@
                 var storedpreURL = WinJS.Application.sessionState.preURL;
                 if (storedpreURL) {
                     preURL.innerText = storedpreURL;
+                }
+
+                var storedProfileIndex = WinJS.Application.sessionState.profileIndex;
+                if (storedProfileIndex) {
+                    document.getElementById("profileLB").selectedIndex = storedProfileIndex;
                 }
 
                 var storedwhereLeetLB = WinJS.Application.sessionState.whereLeetLB;
@@ -169,8 +175,10 @@
         passwdMaster.addEventListener("keypress", preGeneratePassword, false);
         passwdMaster.addEventListener("input", preGeneratePassword, false);
         
-        document.getElementById("profileLB").onchange = loadProfileFromRemote;
+        var profileLB = document.getElementById("profileLB");
+        profileLB.onchange = profileChangedHandler;
         addProfiles();
+        selectAndLoadProfile(profileLB);
 
         saveMasterBtn.addEventListener("click", saveMaster, false);
 
@@ -231,6 +239,9 @@
 
         saveProfileBtn = document.getElementById("saveProfileBtn");
         saveProfileBtn.addEventListener("click", saveProfileHandler, false);
+
+        deleteProfileBtn = document.getElementById("deleteProfileBtn");
+        deleteProfileBtn.addEventListener("click", deleteProfileHandler, false);
 
         // Populate Settings pane and tie commands to Settings flyouts.
         WinJS.Application.onsettings = function (e) {
@@ -413,6 +424,27 @@
 
     }
 
+    function deleteProfileHandler(eventInfo) {
+        var profileLB = document.getElementById("profileLB");
+        var profileIndex = profileLB.selectedIndex;
+        var selectedProfile = profileLB.options[profileIndex].text;
+
+        if (selectedProfile != "Default") {
+            var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
+            if (roamingSettings.containers.hasKey("Profiles")) {
+                roamingSettings.containers.lookup("Profiles").values.remove(selectedProfile);
+            }
+
+
+            // remove option from profileLB and display default profile
+            profileLB.remove(profileIndex);
+            selectAndLoadProfile(profileLB);
+        } else {
+            document.getElementById("deleteDefaultFlyout").winControl.show(profileLB);
+        }
+
+    }
+
     function addProfiles() {
         var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
 
@@ -423,13 +455,10 @@
             while (iterator.hasCurrent) {
                 var profileName = unescape(iterator.current.key);
                 removeProfile(profileName);
-                //EditableSelect.selectAddOption(profileLB, new Option(profileName));
                 document.getElementById("profileLB").add(new Option(profileName));
                 iterator.moveNext();
             }
         } else {
-            profileListArray = new Array("Default");
-
             var option = document.createElement("option");
             option.text = "Default";
             EditableSelect.selectAddOption(document.getElementById("profileLB"), option);
@@ -449,12 +478,21 @@
         }
     }
 
-    function loadProfileFromRemote() {
+    function profileChangedHandler(eventInfo) {
+        var profileLB = this;
+
+        if (profileLB.selectedIndex > 0) {
+            // Don't load profile if changed to add profile
+            WinJS.Application.sessionState.profileIndex = profileLB.selectedIndex;
+
+            loadProfileFromRemote(profileLB);
+        }
+    }
+
+    function loadProfileFromRemote(profileLB) {
 
         var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
         if (roamingSettings.containers.hasKey("Profiles")) {
-
-            var profileLB = document.getElementById("profileLB");
 
             if (profileLB) {
                 var profileIndex = profileLB.selectedIndex;
@@ -483,6 +521,21 @@
         }
 
     }
+
+    function selectAndLoadProfile(profileLB) {
+        profileLB.selectedIndex = 1;
+        for (var i = 1; i < profileLB.options.length; i++) {
+            if (profileLB.options[i].text == "Default") {
+                profileLB.selectedIndex = i;
+                break;
+            }
+        }
+        loadProfileFromRemote(profileLB);
+
+        profileLB.oldSelection = profileLB.selectedIndex; // Required for EditableSelect
+
+    }
+
 
     /// <summary> 
     /// Handler executed when ready to share; handling the share operation should be performed 

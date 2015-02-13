@@ -32,14 +32,30 @@
 		<p>
 		    <label class="noWrap">Master Password
             <input id="passwdMaster" type="password" /> <button id="saveMasterBtn" style="display:none; ">Save Master Password</button></label>
+            <span class="noWrap">
+                <label class="noWrap">
+                    Generated Password
+                    <input class="standard" type="text" id="passwdGenerated" />
+                </label>
+                <button id="copyToClipboardButton">Copy</button>
+                <label class="noWrap"><input type="checkbox" id="ifHidePasswd" />Hide password (Highlight to view)</label>
+            </span>
+        </p>
+
+        <fieldset id="profileSet">
+            <legend>Profile</legend>
             <label class="noWrap">
-                Profile
                 <select id="profileLB" name="profile" class="editable">
                     <option value="!!!edit!!!" class="activateEdit">New Profile</option>
                 </select>
-            </label> 
-            <button id="saveProfileBtn">Save Profile</button>
-        </p>
+            </label>
+            <button id="saveProfileBtn">Save</button>
+            <button id="deleteProfileBtn">Delete</button>
+            <div id="deleteDefaultFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Cannot delete Default}">
+                Cannot delete "Default" profile
+            </div>
+
+        </fieldset>
 		<fieldset id="urlparts">
 		<legend>URL Components</legend>
 
@@ -120,13 +136,6 @@
             <span id="charMinWarning" style="display: none;">Two character minimum required</span>
 		</p>
 		</fieldset>
-		<p><label class="noWrap">Generated Password
-			<input class="standard" type="text" id="passwdGenerated" /></label>
-			<label class="noWrap"><input type="checkbox" id="ifHidePasswd"/>Hide password (Highlight to view)</label>
-        </p>
-		<p>
-		<button id="copyToClipboardButton">Copy Password to Clipboard</button>
-		</p>
     </div>
 	</body>
 </html>
