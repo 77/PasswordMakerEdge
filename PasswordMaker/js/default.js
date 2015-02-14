@@ -169,16 +169,12 @@
     function completedSetPromise() {
 
         preURL.addEventListener("change", preURLHandler, false);
-        preURL.addEventListener("keyup", populateURL, false);
-        preURL.addEventListener("keydown", populateURL, false);
         preURL.addEventListener("keypress", populateURL, false);
         preURL.addEventListener("input", populateURL, false);
 
         copyFromClipboard.addEventListener("click", copyFromClipboardHandler, false);
 
         passwdMaster.addEventListener("change", passwdMasterHandler, false);
-        passwdMaster.addEventListener("keyup", preGeneratePassword, false);
-        passwdMaster.addEventListener("keydown", preGeneratePassword, false);
         passwdMaster.addEventListener("keypress", preGeneratePassword, false);
         passwdMaster.addEventListener("input", preGeneratePassword, false);
         
@@ -194,8 +190,6 @@
         leetLevelLB.addEventListener("change", leetLevelLBHandler, false);
 
         hashAlgorithmLB.addEventListener("change", hashAlgorithmLBHandler, false);
-        hashAlgorithmLB.addEventListener("keyup", preGeneratePassword, false);
-        hashAlgorithmLB.addEventListener("keydown", preGeneratePassword, false);
         hashAlgorithmLB.addEventListener("keypress", preGeneratePassword, false);
         hashAlgorithmLB.addEventListener("input", preGeneratePassword, false);
 
@@ -205,38 +199,26 @@
         pathCB.addEventListener("click", pathCBHandler, false);
 
         passwdUrl.addEventListener("change", passwdUrlHandler, false);
-        passwdUrl.addEventListener("keyup", preGeneratePassword, false);
-        passwdUrl.addEventListener("keydown", preGeneratePassword, false);
         passwdUrl.addEventListener("keypress", preGeneratePassword, false);
         passwdUrl.addEventListener("input", preGeneratePassword, false);
 
         passwdLength.addEventListener("change", passwdLengthHandler, false);
-        passwdLength.addEventListener("keyup", passwdLengthHandler, false);
-        passwdLength.addEventListener("keydown", passwdLengthHandler, false);
         passwdLength.addEventListener("keypress", passwdLengthHandler, false);
         passwdLength.addEventListener("input", passwdLengthHandler, false);
 
         usernameTB.addEventListener("change", usernameTBHandler, false);
-        usernameTB.addEventListener("keyup", preGeneratePassword, false);
-        usernameTB.addEventListener("keydown", preGeneratePassword, false);
         usernameTB.addEventListener("keypress", preGeneratePassword, false);
         usernameTB.addEventListener("input", preGeneratePassword, false);
 
         counter.addEventListener("change", counterHandler, false);
-        counter.addEventListener("keyup", preGeneratePassword, false);
-        counter.addEventListener("keydown", preGeneratePassword, false);
         counter.addEventListener("keypress", preGeneratePassword, false);
         counter.addEventListener("input", preGeneratePassword, false);
 
         passwordPrefix.addEventListener("change", passwordPrefixHandler, false);
-        passwordPrefix.addEventListener("keyup", preGeneratePassword, false);
-        passwordPrefix.addEventListener("keydown", preGeneratePassword, false);
         passwordPrefix.addEventListener("keypress", preGeneratePassword, false);
         passwordPrefix.addEventListener("input", preGeneratePassword, false);
 
         passwordSuffix.addEventListener("change", passwordSuffixHandler, false);
-        passwordSuffix.addEventListener("keyup", preGeneratePassword, false);
-        passwordSuffix.addEventListener("keydown", preGeneratePassword, false);
         passwordSuffix.addEventListener("keypress", preGeneratePassword, false);
         passwordSuffix.addEventListener("input", preGeneratePassword, false);
 
