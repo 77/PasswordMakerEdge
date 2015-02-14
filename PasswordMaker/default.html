@@ -54,7 +54,9 @@
             <div id="deleteDefaultFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Cannot delete Default}">
                 Cannot delete "Default" profile
             </div>
-
+            <div id="InvalidDataVersionFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Cannot delete Default}">
+                Application Version is too high.  Please Upgrade the app.
+            </div>
         </fieldset>
 		<fieldset id="urlparts">
 		<legend>URL Components</legend>
@@ -63,7 +65,7 @@
 			<label class="noWrap">Input URL
               <input id="preURL" type="text" />
 			</label>
-			<button id="copyFromClipboard">Copy URL from Clipboard</button>
+			<button id="copyFromClipboard">Paste URL from Clipboard</button>
 		</p>
 		<p>
 		<label class="noWrap"><input type="checkbox" id="protocolCB" />Protocol</label>

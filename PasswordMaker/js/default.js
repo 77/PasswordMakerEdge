@@ -29,11 +29,13 @@
 
     var app = WinJS.Application;
     var activation = Windows.ApplicationModel.Activation;
-    var shareOperation = null;
+    var applicationData = Windows.Storage.ApplicationData.current;
 
     // UI created by us
     var saveProfileBtn;
     var deleteProfileBtn;
+    var shareOperation = null;
+
 
     app.onactivated = function (args) {
 
@@ -45,52 +47,57 @@
             } else {
                 // TODO: This application has been reactivated from suspension.
                 // Restore application state here.
-                var storedpreURL = WinJS.Application.sessionState.preURL;
+                let storedpreURL = WinJS.Application.sessionState.preURL;
                 if (storedpreURL) {
                     preURL.innerText = storedpreURL;
                 }
 
-                var storedProfileIndex = WinJS.Application.sessionState.profileIndex;
+                let storedProfileIndex = WinJS.Application.sessionState.profileIndex;
                 if (storedProfileIndex) {
-                    document.getElementById("profileLB").selectedIndex = storedProfileIndex;
+                    let profileLB = document.getElementById("profileLB");
+                    if (storedProfileIndex < profileLB.options.length && storedProfileIndex > 0) {
+                        profileLB.selectedIndex = storedProfileIndex;
+                    } else {
+                        profileLB.selectedIndex = 1;
+                    }
                 }
 
-                var storedwhereLeetLB = WinJS.Application.sessionState.whereLeetLB;
+                let storedwhereLeetLB = WinJS.Application.sessionState.whereLeetLB;
                 if (storedwhereLeetLB) {
                     whereLeetLB.value = storedwhereLeetLB;
                 }
 
-                var storedleetLevelLB = WinJS.Application.sessionState.leetLevelLB;
+                let storedleetLevelLB = WinJS.Application.sessionState.leetLevelLB;
                 if (storedleetLevelLB) {
                     leetLevelLB.value = storedleetLevelLB;
                 }
 
-                var storedhashAlgorithmLB = WinJS.Application.sessionState.hashAlgorithmLB;
+                let storedhashAlgorithmLB = WinJS.Application.sessionState.hashAlgorithmLB;
                 if (storedhashAlgorithmLB) {
                     hashAlgorithmLB.value = storedhashAlgorithmLB;
                 }
 
-                var storedprotocolCB = WinJS.Application.sessionState.protocolCB;
+                let storedprotocolCB = WinJS.Application.sessionState.protocolCB;
                 if (storedprotocolCB !== undefined) {
                     protocolCB.status = storedprotocolCB;
                 }
 
-                var storedsubdomainCB = WinJS.Application.sessionState.subdomainCB;
+                let storedsubdomainCB = WinJS.Application.sessionState.subdomainCB;
                 if (storedsubdomainCB !== undefined) {
                     subdomainCB.status = storedsubdomainCB;
                 }
 
-                var storeddomainCB = WinJS.Application.sessionState.domainCB;
+                let storeddomainCB = WinJS.Application.sessionState.domainCB;
                 if (storeddomainCB !== undefined) {
                     domainCB.status = storeddomainCB;
                 }
 
-                var storedpathCB = WinJS.Application.sessionState.pathCB;
+                let storedpathCB = WinJS.Application.sessionState.pathCB;
                 if (storedpathCB !== undefined) {
                     pathCB.status = storedpathCB;
                 }
 
-                var storedpasswdUrl = WinJS.Application.sessionState.passwdUrl;
+                let storedpasswdUrl = WinJS.Application.sessionState.passwdUrl;
                 if (storedpasswdUrl) {
                     passwdUrl.innerText = storedpasswdUrl;
                 }
@@ -108,13 +115,13 @@
                 }
 
                 if (WinJS.Application.sessionState.charsetIndex) {
-                    var newCharOptions = WinJS.Application.sessionState.newCharOptions;
+                    let newCharOptions = WinJS.Application.sessionState.newCharOptions;
 
-                    var charset = document.getElementById("charset");
-                    var charsetOpts = charset.options;
+                    let charset = document.getElementById("charset");
+                    let charsetOpts = charset.options;
 
                     if (newCharOptions) {
-                        for (var i = 0; i < newCharOptions.length; i++) {
+                        for (let i = 0; i < newCharOptions.length; i++) {
                             charsetOpts[charsetOpts.length] = new Option(newCharOptions[i]);
                         }
                     }
@@ -175,7 +182,7 @@
         passwdMaster.addEventListener("keypress", preGeneratePassword, false);
         passwdMaster.addEventListener("input", preGeneratePassword, false);
         
-        var profileLB = document.getElementById("profileLB");
+        let profileLB = document.getElementById("profileLB");
         profileLB.onchange = profileChangedHandler;
         addProfiles();
         selectAndLoadProfile(profileLB);
@@ -243,6 +250,8 @@
         deleteProfileBtn = document.getElementById("deleteProfileBtn");
         deleteProfileBtn.addEventListener("click", deleteProfileHandler, false);
 
+        Windows.Storage.ApplicationData.current.addEventListener("datachanged", dataChangedHandler);
+
         // Populate Settings pane and tie commands to Settings flyouts.
         WinJS.Application.onsettings = function (e) {
             e.detail.applicationcommands = {
@@ -267,10 +276,10 @@
         // option, we cannot attach an event handler to it, so 
         // save its state here.
         WinJS.Application.sessionState.charsetIndex = document.getElementById("charset").selectedIndex;
-        var charsetOptions = document.getElementById("charset").options;
-        var newCharOptions = [];
+        let charsetOptions = document.getElementById("charset").options;
+        let newCharOptions = [];
 
-        for (var i = 7,j=0; i < charsetOptions.length; i++,j++) {
+        for (let i = 7,j=0; i < charsetOptions.length; i++,j++) {
             newCharOptions[j] = document.getElementById("charset").options[i].text;
         }
         WinJS.Application.sessionState.newCharOptions = newCharOptions;
@@ -302,7 +311,7 @@
     }
 
     function copyFromClipboardHandler(eventInfo) {
-        var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.getContent();
+        let dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.getContent();
         if (dataPackageView.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.text)) {
             dataPackageView.getTextAsync().then(function (text) {
                 preURL.innerText = text;
@@ -317,7 +326,7 @@
 
     function copyToClipboardHandler(eventInfo) {
 
-        var dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
+        let dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
         dataPackage.setText(passwdGenerated.value);
         Windows.ApplicationModel.DataTransfer.Clipboard.setContent(dataPackage);
     }
@@ -412,25 +421,30 @@
 
     function saveProfileHandler(eventInfo) {
 
-        var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
 
-        roamingSettings.createContainer("Profiles",
-            Windows.Storage.ApplicationDataCreateDisposition.Always);
+        applicationData.setVersionAsync(1, setVersionHandler).done(
+            function success() {
+                let roamingSettings = applicationData.roamingSettings;
+                roamingSettings.createContainer("Profiles",
+                    Windows.Storage.ApplicationDataCreateDisposition.Always);
 
-        var profileIndex = document.getElementById("profileLB").selectedIndex;
-        var selectedProfile = document.getElementById("profileLB").options[profileIndex].text;
+                let profileIndex = document.getElementById("profileLB").selectedIndex;
+                let selectedProfile = document.getElementById("profileLB").options[profileIndex].text;
 
-        roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)] = exportPreferences();
+                roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)] = exportPreferences();
+            },
+            function error() {
+            });
 
     }
 
     function deleteProfileHandler(eventInfo) {
-        var profileLB = document.getElementById("profileLB");
-        var profileIndex = profileLB.selectedIndex;
-        var selectedProfile = profileLB.options[profileIndex].text;
+        let roamingSettings = applicationData.roamingSettings;
+        let profileLB = document.getElementById("profileLB");
+        let profileIndex = profileLB.selectedIndex;
+        let selectedProfile = profileLB.options[profileIndex].text;
 
         if (selectedProfile != "Default") {
-            var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
             if (roamingSettings.containers.hasKey("Profiles")) {
                 roamingSettings.containers.lookup("Profiles").values.remove(selectedProfile);
             }
@@ -446,29 +460,46 @@
     }
 
     function addProfiles() {
-        var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
 
-        if (roamingSettings.containers.hasKey("Profiles")) {
+        if (applicationData.version) {
 
-            var iterator = roamingSettings.containers.lookup("Profiles").values.first();
+            if (applicationData.version == 1) {
+                let roamingSettings = applicationData.roamingSettings;
 
-            while (iterator.hasCurrent) {
-                var profileName = unescape(iterator.current.key);
-                removeProfile(profileName);
-                document.getElementById("profileLB").add(new Option(profileName));
-                iterator.moveNext();
+                if (roamingSettings.containers.hasKey("Profiles")) {
+
+                    let iterator = roamingSettings.containers.lookup("Profiles").values.first();
+
+                    while (iterator.hasCurrent) {
+                        let profileName = unescape(iterator.current.key);
+                        removeProfile(profileName);
+                        document.getElementById("profileLB").add(new Option(profileName));
+                        iterator.moveNext();
+                    }
+                } else {
+                    createDefaultOption();
+                }
+            } else {
+                // We can't handle any version other than 1
+                createDefaultOption();
+                document.getElementById("InvalidDataVersionFlyout").winControl.show(profileLB);
             }
         } else {
-            var option = document.createElement("option");
-            option.text = "Default";
-            EditableSelect.selectAddOption(document.getElementById("profileLB"), option);
-            option.selected = "selected";
+            // No Version information, so don't load data, just the default
+            createDefaultOption();
         }
+    }
+
+    function createDefaultOption() {
+        let option = document.createElement("option");
+        option.text = "Default";
+        EditableSelect.selectAddOption(document.getElementById("profileLB"), option);
+        option.selected = "selected";
     }
 
     function removeProfile(profileName) {
 
-        var profileLB = document.getElementById("profileLB");
+        let profileLB = document.getElementById("profileLB");
 
         for (var i = 0; i < profileLB.length; i++) {
             if (profileLB.options[i].text == profileName) {
@@ -479,7 +510,7 @@
     }
 
     function profileChangedHandler(eventInfo) {
-        var profileLB = this;
+        let profileLB = this;
 
         if (profileLB.selectedIndex > 0) {
             // Don't load profile if changed to add profile
@@ -490,17 +521,17 @@
     }
 
     function loadProfileFromRemote(profileLB) {
+        let roamingSettings = applicationData.roamingSettings;
 
-        var roamingSettings = Windows.Storage.ApplicationData.current.roamingSettings;
         if (roamingSettings.containers.hasKey("Profiles")) {
 
             if (profileLB) {
-                var profileIndex = profileLB.selectedIndex;
-                var selectedProfile = profileLB.options[profileIndex].text;
+                let profileIndex = profileLB.selectedIndex;
+                let selectedProfile = profileLB.options[profileIndex].text;
 
-                var a = unescape(roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)]);
+                let a = unescape(roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)]);
 
-                var settingsArray = a.split("|");
+                let settingsArray = a.split("|");
                 preUrl.value = (settingsArray[0] == undefined || settingsArray[6] == undefined) ? "" : unescape(settingsArray[0]);
                 passwdLength.value = (settingsArray[1] == undefined || settingsArray[1] == undefined) ? "8" : settingsArray[1];
                 protocolCB.checked = (settingsArray[2] == undefined || settingsArray[2] == undefined) ? false : settingsArray[2] == "true";
@@ -522,18 +553,52 @@
 
     }
 
-    function selectAndLoadProfile(profileLB) {
+    function selectAndLoadProfile(profileLB, preferred) {
         profileLB.selectedIndex = 1;
-        for (var i = 1; i < profileLB.options.length; i++) {
+        for (let i = 1; i < profileLB.options.length; i++) {
             if (profileLB.options[i].text == "Default") {
                 profileLB.selectedIndex = i;
                 break;
             }
         }
+
+        if (preferred) {
+            for (let i = 1; i < profileLB.options.length; i++) {
+                if (profileLB.options[i].text == preferred) {
+                    profileLB.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
         loadProfileFromRemote(profileLB);
 
         profileLB.oldSelection = profileLB.selectedIndex; // Required for EditableSelect
 
+    }
+
+
+    // The remote data has changed
+    function dataChangedHandler(eventArgs) {
+
+        if (applicationData.version == 1) {
+
+            profileLB = document.getElementById("profileLB");
+
+            // Save the current selection
+            preferred = profileLB.options[profileLB.selectedIndex].text;
+            removeAllProfiles();
+            addProfiles();
+            selectAndLoadProfile(profileLB, preferred);
+        } else {
+            document.getElementById("InvalidDataVersionFlyout").winControl.show(profileLB);
+        }
+    }
+
+    // Method to handle different versions
+    function setVersionHandler(setVersionRequest) {
+        // At the moment we only handle v1, so we
+        // don't need any conversions
     }
 
 
@@ -542,7 +607,7 @@
     /// outside the activation handler 
     /// </summary> 
     function shareReady(eventArgs) {
-        var sharedData = shareOperation.data;
+        let sharedData = shareOperation.data;
 
         if (sharedData.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.text)) {
             // Set the preURL to the shared data
@@ -568,7 +633,6 @@
         }
 
     }
-
 
     WinJS.Application.addEventListener("shareready", shareReady, false);
     app.start();
