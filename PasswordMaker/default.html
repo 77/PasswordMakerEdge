@@ -37,7 +37,7 @@
                     Generated Password
                     <input class="standard" type="text" id="passwdGenerated" />
                 </label>
-                <button id="copyToClipboardButton">Copy</button>
+                <button id="copyToClipboardButton">&#xE16F;</button>
                 <label class="noWrap"><input type="checkbox" id="ifHidePasswd" />Hide password (Highlight to view)</label>
             </span>
         </p>
@@ -49,8 +49,8 @@
                     <option value="!!!edit!!!" class="activateEdit">New Profile</option>
                 </select>
             </label>
-            <button id="saveProfileBtn">Save</button>
-            <button id="deleteProfileBtn">Delete</button>
+            <button id="saveProfileBtn">&#xe105;</button>
+            <button id="deleteProfileBtn">&#xe107;</button>
             <div id="deleteDefaultFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Cannot delete Default}">
                 Cannot delete "Default" profile
             </div>
@@ -65,7 +65,7 @@
 			<label class="noWrap">Input URL
               <input id="preURL" type="text" />
 			</label>
-			<button id="copyFromClipboard">Paste URL from Clipboard</button>
+			<button id="copyFromClipboard">&#xe16d;</button>
 		</p>
 		<p>
 		<label class="noWrap"><input type="checkbox" id="protocolCB" />Protocol</label>
@@ -115,28 +115,28 @@
 </select></label>
 		</p></fieldset>
 		<fieldset>
-					<legend>Generated Password Modifiers</legend>
-
-		<p>
-			<label class="noWrap">Length <input class="standard" id="passwdLength" maxlength="3" size="3" value="12"/></label>
-            <label class="noWrap">Username <input class="standard" id="usernameTB"/></label>
-		    <label class="noWrap">Modifier <input class="standard" id="counter"/></label>
-		    <label class="noWrap">Prefix <input class="standard" id="passwordPrefix" /></label>
-		    <label class="noWrap">Suffix <input class="standard" id="passwordSuffix" /></label>
-		</p>
-		<p>
-			<label>Characters <select id="charset" class="editable" onchange="preGeneratePassword();">
-<option value="!!!edit!!!" class="activateEdit">Edit Character Set</option>
-<option selected="selected">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
-				<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</option>
-				<option>0123456789abcdef</option>
-				<option>0123456789</option>
-				<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</option>
-				<option>`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
-			</select>
-			</label>
-            <span id="charMinWarning" style="display: none;">Two character minimum required</span>
-		</p>
+			<legend>Modifiers</legend>
+			<p>
+				<label class="noWrap">Length <input class="standard" id="passwdLength" maxlength="3" size="3" value="12"/></label>
+				<label class="noWrap">Username <input class="standard" id="usernameTB"/></label>
+				<label class="noWrap">Modifier <input class="standard" id="counter"/></label>
+				<label class="noWrap">Prefix <input class="standard" id="passwordPrefix" /></label>
+				<label class="noWrap">Suffix <input class="standard" id="passwordSuffix" /></label>
+			</p>
+			<p>
+				<label>Characters 
+					<select id="charset" class="editable" onchange="preGeneratePassword();">
+						<option value="!!!edit!!!" class="activateEdit">Edit Character Set</option>
+						<option selected="selected">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
+						<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</option>
+						<option>0123456789abcdef</option>
+						<option>0123456789</option>
+						<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</option>
+						<option>`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
+					</select>
+				</label>
+				<span id="charMinWarning" style="display: none;">Two character minimum required</span>
+			</p>
 		</fieldset>
     </div>
 	</body>
