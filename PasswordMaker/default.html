@@ -38,7 +38,8 @@
                     <input class="standard" type="text" id="passwdGenerated" />
                 </label>
                 <button id="copyToClipboardButton">&#xE16F;</button>
-                <label class="noWrap"><input type="checkbox" id="ifHidePasswd" />Hide password (Highlight to view)</label>
+                <!-- This is controlled from the settings flyout-->
+                <label class="noWrap" style="display:none;"><input type="checkbox" id="ifHidePasswd" />Hide password (Highlight to view)</label>
             </span>
         </p>
 
@@ -55,7 +56,7 @@
                 Cannot delete "Default" profile
             </div>
             <div id="InvalidDataVersionFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Cannot delete Default}">
-                Application Version is too high.  Please Upgrade the app.
+                Stored Application Data version is too high.  Please Upgrade this app.
             </div>
         </fieldset>
 		<fieldset id="urlparts">

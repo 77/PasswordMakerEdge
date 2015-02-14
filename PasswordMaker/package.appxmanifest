@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" StartPage="default.html">
-      <m2:VisualElements DisplayName="PasswordMaker Modern" Description="PasswordMaker.  One password to rule them all." ForegroundText="dark" BackgroundColor="#ffffff" Square150x150Logo="images\Logo.png" Square30x30Logo="images\SmallLogo.png">
+      <m2:VisualElements DisplayName="PasswordMaker Modern" Description="PasswordMaker.  One password to rule them all." ForegroundText="dark" BackgroundColor="#ffffff" Square150x150Logo="images\Logo.png" Square30x30Logo="images\SmallLogo.png" ToastCapable="false">
         <m2:DefaultTile Square70x70Logo="images\Square70x70Logo.png" Square310x310Logo="images\Square310x310Logo.png" ShortName="PasswordMaker" DefaultSize="square150x150Logo" Wide310x150Logo="images\Wide310x150Logo.png">
           <m2:ShowNameOnTiles>
             <m2:ShowOn Tile="square150x150Logo" />
