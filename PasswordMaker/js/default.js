@@ -167,6 +167,11 @@
     };
 
     function completedSetPromise() {
+        saveProfileBtn = document.getElementById("saveProfileBtn");
+        deleteProfileBtn = document.getElementById("deleteProfileBtn");
+        // These need to be first as loading profiles sometimes clicks this button
+        saveProfileBtn.addEventListener("click", saveProfileHandler, false);
+        deleteProfileBtn.addEventListener("click", deleteProfileHandler, false);
 
         preURL.addEventListener("change", preURLHandler, false);
         preURL.addEventListener("keypress", populateURL, false);
@@ -226,11 +231,6 @@
 
         copyToClipboardButton.addEventListener("click", copyToClipboardHandler, false);
 
-        saveProfileBtn = document.getElementById("saveProfileBtn");
-        saveProfileBtn.addEventListener("click", saveProfileHandler, false);
-
-        deleteProfileBtn = document.getElementById("deleteProfileBtn");
-        deleteProfileBtn.addEventListener("click", deleteProfileHandler, false);
 
         Windows.Storage.ApplicationData.current.addEventListener("datachanged", dataChangedHandler);
 
@@ -461,6 +461,8 @@
                     }
                 } else {
                     createDefaultOption();
+                    // Save the default profile in the remoteSettings
+                    saveProfileBtn.click();
                 }
             } else {
                 // We can't handle any version other than 1
@@ -470,6 +472,7 @@
         } else {
             // No Version information, so don't load data, just the default
             createDefaultOption();
+            saveProfileBtn.click();
         }
     }
 
@@ -560,17 +563,25 @@
 
     }
 
+    function removeAllProfiles(profileLB) {
+        /// Summary
+        /// Removes all profiles except the Add New Profile from the 
+        /// profileLB 
+        while (profileLB.options.length > 1) {
+            profileLB.remove(1);
+        }
+    }
 
     // The remote data has changed
     function dataChangedHandler(eventArgs) {
 
         if (applicationData.version == 1) {
 
-            profileLB = document.getElementById("profileLB");
+            let profileLB = document.getElementById("profileLB");
 
             // Save the current selection
-            preferred = profileLB.options[profileLB.selectedIndex].text;
-            removeAllProfiles();
+            let preferred = profileLB.options[profileLB.selectedIndex].text;
+            removeAllProfiles(profileLB);
             addProfiles();
             selectAndLoadProfile(profileLB, preferred);
         } else {

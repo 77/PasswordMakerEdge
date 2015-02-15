@@ -7,8 +7,10 @@
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
-            // TODO: Initialize the page here.
-            document.getElementById("displayToggle").addEventListener("change", displayToggleHandler);
+            document.getElementById("displayToggle").addEventListener("change", displayToggleHandler, false);
+            document.getElementById("ResetDataBtn").addEventListener("click", resetDataHandler, false);
+            document.getElementById("ResetConfirmBtn").addEventListener("click", resetConfirmHandler, false);
+            document.getElementById("ResetCancelBtn").addEventListener("click", resetCancelHandler, false);
         },
 
         unload: function () {
@@ -24,5 +26,27 @@
 
     function displayToggleHandler(eventInfo) {
         eventInfo.target.ownerDocument.getElementById("ifHidePasswd").click();
+    }
+
+    function resetDataHandler(eventInfo) {
+        //document.getElementById("ResetDataConfirmFlyout").winControl.show(this);
+        document.getElementById("ResetDataConfirmDiv").style.display = "inline";
+        document.getElementById("ResetDataBtn").style.display = "none";
+    }
+
+    function resetConfirmHandler(eventInfo) {
+        Windows.Storage.ApplicationData.current.clearAsync().done(
+            function () {
+                Windows.Storage.ApplicationData.current.signalDataChanged();
+                document.getElementById("ResetDataConfirmDiv").style.display = "none";
+                document.getElementById("ResetDataBtn").style.display = "inline";
+            }
+        );
+
+    }
+
+    function resetCancelHandler(eventInfo) {
+        document.getElementById("ResetDataConfirmDiv").style.display = "none";
+        document.getElementById("ResetDataBtn").style.display = "inline";
     }
 })();
