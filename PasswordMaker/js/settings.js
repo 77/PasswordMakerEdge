@@ -8,6 +8,8 @@
         // populates the page elements with the app's data.
         ready: function (element, options) {
             document.getElementById("displayToggle").addEventListener("change", displayToggleHandler, false);
+            document.getElementById("UsedFollowsProfileToggle").winControl.checked = Windows.Storage.ApplicationData.current.roamingSettings.values["UsedFollowsProfile"];
+            document.getElementById("UsedFollowsProfileToggle").addEventListener("change", UsedFollowsProfileToggleHandler, false);
             document.getElementById("ResetDataBtn").addEventListener("click", resetDataHandler, false);
             document.getElementById("ResetConfirmBtn").addEventListener("click", resetConfirmHandler, false);
             document.getElementById("ResetCancelBtn").addEventListener("click", resetCancelHandler, false);
@@ -26,6 +28,10 @@
 
     function displayToggleHandler(eventInfo) {
         eventInfo.target.ownerDocument.getElementById("ifHidePasswd").click();
+    }
+
+    function UsedFollowsProfileToggleHandler(eventInfo) {
+        Windows.Storage.ApplicationData.current.roamingSettings.values["UsedFollowsProfile"] = eventInfo.currentTarget.winControl._checked;
     }
 
     function resetDataHandler(eventInfo) {

@@ -171,8 +171,8 @@
         deleteProfileBtn.addEventListener("click", deleteProfileHandler, false);
 
         preURL.addEventListener("change", preURLHandler, false);
-        preURL.addEventListener("keypress", populateURL, false);
-        preURL.addEventListener("input", populateURL, false);
+        preURL.addEventListener("keypress", preURLHandler, false);
+        preURL.addEventListener("input", preURLHandler, false);
 
         copyFromClipboard.addEventListener("click", copyFromClipboardHandler, false);
 
@@ -297,10 +297,12 @@
         if (dataPackageView.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.text)) {
             dataPackageView.getTextAsync().then(function (text) {
                 preURL.innerText = text;
-
-                populateURL();
                 WinJS.Application.sessionState.preURL = preUrl.value;
-                WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+
+                if (!usedFollowsProfile()) {
+                    populateURL();
+                    WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                }
 
             });
         }
@@ -318,10 +320,13 @@
     }
         
     function preURLHandler(eventInfo) {
-        populateURL();
-
         WinJS.Application.sessionState.preURL = preURL.value;
-        WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+
+        if (!usedFollowsProfile()) {
+            populateURL();
+            WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+        }
+
         saveProfile();
     }
 
@@ -340,34 +345,38 @@
     }
 
     function protocolCBHandler(eventInfo) {
-        populateURL();
-
+        if (!usedFollowsProfile()) {
+            populateURL();
+            WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+        }
         WinJS.Application.sessionState.protocolCB = protocolCB.status;
-        WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
         saveProfile();
     }
 
     function subdomainCBHandler(eventInfo) {
-        populateURL();
-
+        if (!usedFollowsProfile()) {
+            populateURL();
+            WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+        }
         WinJS.Application.sessionState.subdomainCB = subdomainCB.status;
-        WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
         saveProfile();
     }
 
     function domainCBHandler(eventInfo) {
-        populateURL();
-
+        if (!usedFollowsProfile()) {
+            populateURL();
+            WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+        }
         WinJS.Application.sessionState.domainCB = domainCB.status;
-        WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
         saveProfile();
     }
 
     function pathCBHandler(eventInfo) {
-        populateURL();
-
+        if (!usedFollowsProfile()) {
+            populateURL();
+            WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+        }
         WinJS.Application.sessionState.pathCB = pathCB.status;
-        WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
         saveProfile();
     }
 
@@ -611,9 +620,11 @@
             // Set the preURL to the shared data
             sharedData.getTextAsync().done(function (text) {
                 preURL.innerText = text;
-                populateURL();
+                if (!usedFollowsProfile()) {
+                    populateURL();
+                    WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                }
                 WinJS.Application.sessionState.preURL = preUrl.value;
-                WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
 
             }, function (e) {
                 preURL.innerText = "Error Receiving Data from Share";
@@ -622,14 +633,40 @@
         if (sharedData.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.webLink)) {
             sharedData.getWebLinkAsync().done(function (webLink) {
                 preURL.innerText = webLink.rawUri;
-                populateURL();
                 WinJS.Application.sessionState.preURL = preUrl.value;
-                WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                if (!usedFollowsProfile()) {
+                    populateURL();
+                    WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                }
             }, function (e) {
                 preURL.innerText = "Error Receiving Data from Share";
             });
         }
 
+    }
+
+    // Returns true if the currently selected profile is the default
+    function isDefaultProfile() {
+        let profileLB = document.getElementById("profileLB");
+        let profileIndex = profileLB.selectedIndex;
+        let selectedProfile = profileLB.options[profileIndex].text;
+
+        return (selectedProfile === "Default");
+
+    }
+
+    // Return true if the saved 'use Text' should
+    // be used, rather than generate another from the URL
+    function usedFollowsProfile() {
+        // Always use the URL for the default profile
+        if (isDefaultProfile()) return false;
+
+        if (Windows.Storage.ApplicationData.current.roamingSettings.values["UsedFollowsProfile"] !== undefined) {
+            return Windows.Storage.ApplicationData.current.roamingSettings.values["UsedFollowsProfile"];
+        } else {
+            // By default, follow the Firefox plugin usage
+            return true;
+        }
     }
 
     WinJS.Application.addEventListener("shareready", shareReady, false);
