@@ -32,7 +32,6 @@
     var applicationData = Windows.Storage.ApplicationData.current;
 
     // UI created by us
-    var saveProfileBtn;
     var deleteProfileBtn;
     var shareOperation = null;
 
@@ -167,10 +166,8 @@
     };
 
     function completedSetPromise() {
-        saveProfileBtn = document.getElementById("saveProfileBtn");
         deleteProfileBtn = document.getElementById("deleteProfileBtn");
         // These need to be first as loading profiles sometimes clicks this button
-        saveProfileBtn.addEventListener("click", saveProfileHandler, false);
         deleteProfileBtn.addEventListener("click", deleteProfileHandler, false);
 
         preURL.addEventListener("change", preURLHandler, false);
@@ -274,6 +271,7 @@
         preGeneratePassword();
 
         WinJS.Application.sessionState.whereLeetLB = whereLeetLB.value;
+        saveProfile();
     }
 
     function passwdLengthHandler(eventInfo) {
@@ -281,6 +279,7 @@
         preGeneratePassword();
 
         WinJS.Application.sessionState.passwdLength = passwdLength.value;
+        saveProfile();
     }
 
     function ifHidePasswdHandler(eventInfo) {
@@ -323,20 +322,21 @@
 
         WinJS.Application.sessionState.preURL = preURL.value;
         WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
-
+        saveProfile();
     }
 
     function leetLevelLBHandler(eventInfo) {
         preGeneratePassword();
 
         WinJS.Application.sessionState.leetLevelLB = leetLevelLB.value;
+        saveProfile();
     }
 
     function hashAlgorithmLBHandler(eventInfo) {
         preGeneratePassword();
 
         WinJS.Application.sessionState.hashAlgorithmLB = hashAlgorithmLB.value;
-
+        saveProfile();
     }
 
     function protocolCBHandler(eventInfo) {
@@ -344,7 +344,7 @@
 
         WinJS.Application.sessionState.protocolCB = protocolCB.status;
         WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
-
+        saveProfile();
     }
 
     function subdomainCBHandler(eventInfo) {
@@ -352,7 +352,7 @@
 
         WinJS.Application.sessionState.subdomainCB = subdomainCB.status;
         WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
-
+        saveProfile();
     }
 
     function domainCBHandler(eventInfo) {
@@ -360,7 +360,7 @@
 
         WinJS.Application.sessionState.domainCB = domainCB.status;
         WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
-
+        saveProfile();
     }
 
     function pathCBHandler(eventInfo) {
@@ -368,41 +368,45 @@
 
         WinJS.Application.sessionState.pathCB = pathCB.status;
         WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
-
+        saveProfile();
     }
 
     function passwdUrlHandler(eventInfo) {
         preGeneratePassword();
 
         WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+        saveProfile();
     }
 
     function usernameTBHandler(eventInfo) {
         preGeneratePassword();
 
         WinJS.Application.sessionState.usernameTB = usernameTB.value;
+        saveProfile();
     }
 
     function counterHandler(eventInfo) {
         preGeneratePassword();
 
         WinJS.Application.sessionState.counter = counter.value;
+        saveProfile();
     }
     
     function passwordPrefixHandler(eventInfo) {
         preGeneratePassword();
 
         WinJS.Application.sessionState.passwordPrefix = passwordPrefix.value;
-
+        saveProfile();
     }
 
     function passwordSuffixHandler(eventInfo) {
         preGeneratePassword();
 
         WinJS.Application.sessionState.passwordSuffix = passwordSuffix.value;
+        saveProfile();
     }
 
-    function saveProfileHandler(eventInfo) {
+    function saveProfile() {
 
 
         applicationData.setVersionAsync(1, setVersionHandler).done(
@@ -429,7 +433,7 @@
 
         if (selectedProfile != "Default") {
             if (roamingSettings.containers.hasKey("Profiles")) {
-                roamingSettings.containers.lookup("Profiles").values.remove(selectedProfile);
+                roamingSettings.containers.lookup("Profiles").values.remove(escape(selectedProfile));
             }
 
 
@@ -455,14 +459,14 @@
 
                     while (iterator.hasCurrent) {
                         let profileName = unescape(iterator.current.key);
-                        removeProfile(profileName);
+                        removeProfileFromLB(profileName);
                         document.getElementById("profileLB").add(new Option(profileName));
                         iterator.moveNext();
                     }
                 } else {
                     createDefaultOption();
                     // Save the default profile in the remoteSettings
-                    saveProfileBtn.click();
+                    saveProfile();
                 }
             } else {
                 // We can't handle any version other than 1
@@ -472,7 +476,7 @@
         } else {
             // No Version information, so don't load data, just the default
             createDefaultOption();
-            saveProfileBtn.click();
+            saveProfile();
         }
     }
 
@@ -483,7 +487,7 @@
         option.selected = "selected";
     }
 
-    function removeProfile(profileName) {
+    function removeProfileFromLB(profileName) {
 
         let profileLB = document.getElementById("profileLB");
 
