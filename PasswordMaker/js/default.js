@@ -236,8 +236,6 @@
             e.detail.applicationcommands = {
                 "helpDiv": { href: "HelpUI.html", title: "Help" },
                 "SettingsDiv": { href: "settings.html", title: "Settings"},
-                "licenseDiv": { href: "license.html", title: "License" },
-                "pwmLibLicenseDiv": { href: "pwmLibLicense.html", title: "LGPL v2.1" },
                 "aboutDiv": { href: "about.html", title: "About" }
             };
             WinJS.UI.SettingsFlyout.populateSettings(e);

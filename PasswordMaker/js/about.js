@@ -33,9 +33,33 @@
         // the resulting elements have been parented to the DOM.
         ready: function (element, options) {
             insertVersion();
+            document.getElementById("MSPLLink").addEventListener("click", showMSPL, false);
+            document.getElementById("MSBackButton").addEventListener("click", showAbout, false);
+
+            document.getElementById("LPGLLink").addEventListener("click", showLPGL, false);
+            document.getElementById("LPGLLink2").addEventListener("click", showLPGL, false);
+            document.getElementById("LPGLLicenseBackButton").addEventListener("click", showAbout, false);
         }
     });
 
+    function showAbout(eventInfo) {
+        eventInfo.target.ownerDocument.getElementById("aboutDetails").style.display = "inline";
+        eventInfo.target.ownerDocument.getElementById("MicrosoftPublicLicense").style.display = "none";
+        eventInfo.target.ownerDocument.getElementById("LPGLLicense").style.display = "none";
+        eventInfo.preventDefault();
+    }
+
+    function showMSPL(eventInfo) {
+        eventInfo.target.ownerDocument.getElementById("aboutDetails").style.display = "none";
+        eventInfo.target.ownerDocument.getElementById("MicrosoftPublicLicense").style.display = "inline";
+        eventInfo.preventDefault();
+    }
+
+    function showLPGL(eventInfo) {
+        eventInfo.target.ownerDocument.getElementById("aboutDetails").style.display = "none";
+        eventInfo.target.ownerDocument.getElementById("LPGLLicense").style.display = "inline";
+        eventInfo.preventDefault();
+    }
 
     function insertVersion() {
         var currentPackage = Windows.ApplicationModel.Package.current;
