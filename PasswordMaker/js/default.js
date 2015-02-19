@@ -529,7 +529,9 @@
                 let a = unescape(roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)]);
 
                 let settingsArray = a.split("|");
-                preUrl.value = (settingsArray[0] == undefined || settingsArray[6] == undefined) ? "" : unescape(settingsArray[0]);
+                //Keep the existing preURL.  The text to use is saved in passwdUrl and that is not changed if
+                // the option to keep saved is selected.
+                //preUrl.value = (settingsArray[0] == undefined || settingsArray[6] == undefined) ? "" : unescape(settingsArray[0]);
                 passwdLength.value = (settingsArray[1] == undefined || settingsArray[1] == undefined) ? "8" : settingsArray[1];
                 protocolCB.checked = (settingsArray[2] == undefined || settingsArray[2] == undefined) ? false : settingsArray[2] == "true";
                 domainCB.checked = (settingsArray[3] == undefined || settingsArray[3] == undefined) ? true : settingsArray[3] == "true";
@@ -544,7 +546,13 @@
                 EditableSelect.setValue(document.getElementById("charset"), (settingsArray[12] == undefined || settingsArray[12] == undefined) ? base93 : unescape(settingsArray[12]));
                 passwordPrefix.value = (settingsArray[13] == undefined || settingsArray[13] == undefined) ? "" : unescape(settingsArray[13]);
                 passwordSuffix.value = (settingsArray[14] == undefined || settingsArray[14] == undefined) ? "" : unescape(settingsArray[14]);
-                preGeneratePassword();
+                if (usedFollowsProfile()) {
+                    preGeneratePassword();
+                } else {
+                    // Recalculate the passwdUrl and then password
+                    populateURL();
+                    WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                }
             }
         }
 
