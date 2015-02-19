@@ -144,6 +144,10 @@
                     ifHidePasswd.status = WinJS.Application.sessionState.ifHidePasswd;
                 }
 
+                if (WinJS.Application.sessionState.keep !== undefined) {
+                    document.getElementById("keepCB").status = WinJS.Application.sessionState.keep;
+                }
+
                 preGeneratePassword();
 
             } 
@@ -228,6 +232,7 @@
 
         copyToClipboardButton.addEventListener("click", copyToClipboardHandler, false);
 
+        document.getElementById("keepCB").addEventListener("click", keepHandler, false);
 
         Windows.Storage.ApplicationData.current.addEventListener("datachanged", dataChangedHandler);
 
@@ -413,6 +418,15 @@
         saveProfile();
     }
 
+    function keepHandler(eventInfo) {
+        if (!usedFollowsProfile()) {
+            populateURL();
+            WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+        }
+        WinJS.Application.sessionState.keep = eventInfo.value;
+        saveProfile();
+    }
+
     function saveProfile() {
 
 
@@ -425,7 +439,7 @@
                 let profileIndex = document.getElementById("profileLB").selectedIndex;
                 let selectedProfile = document.getElementById("profileLB").options[profileIndex].text;
 
-                roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)] = exportPreferences();
+                roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)] = exportPreferences() + "|" + document.getElementById("keepCB").checked;
             },
             function error() {
             });
@@ -546,6 +560,16 @@
                 EditableSelect.setValue(document.getElementById("charset"), (settingsArray[12] == undefined || settingsArray[12] == undefined) ? base93 : unescape(settingsArray[12]));
                 passwordPrefix.value = (settingsArray[13] == undefined || settingsArray[13] == undefined) ? "" : unescape(settingsArray[13]);
                 passwordSuffix.value = (settingsArray[14] == undefined || settingsArray[14] == undefined) ? "" : unescape(settingsArray[14]);
+                // End of PasswordMaker Library settings
+                // Additional PasswordMaker Modern settings below
+                document.getElementById("keepCB").checked = (settingsArray[15] == undefined) ? true : settingsArray[15] == "true";
+
+                if (selectedProfile == "Default") {
+                    document.getElementById("keepLabel").style.display = "none";
+                } else {
+                    document.getElementById("keepLabel").style.display = "inline-block";
+                }
+
                 if (usedFollowsProfile()) {
                     preGeneratePassword();
                 } else {
@@ -667,12 +691,7 @@
         // Always use the URL for the default profile
         if (isDefaultProfile()) return false;
 
-        if (Windows.Storage.ApplicationData.current.roamingSettings.values["UsedFollowsProfile"] !== undefined) {
-            return Windows.Storage.ApplicationData.current.roamingSettings.values["UsedFollowsProfile"];
-        } else {
-            // By default, follow the Firefox plugin usage
-            return true;
-        }
+        return document.getElementById("keepCB").checked;
     }
 
     WinJS.Application.addEventListener("shareready", shareReady, false);
