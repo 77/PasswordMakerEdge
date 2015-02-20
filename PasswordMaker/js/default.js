@@ -236,6 +236,11 @@
 
         Windows.Storage.ApplicationData.current.addEventListener("datachanged", dataChangedHandler);
 
+        // charset is an editable select class that keeps getting deleted and
+        // recreated.  When it is recreated, only this field gets copied, so 
+        // we need to store it here
+        document.getElementById("charset").onchange = charsetChangedHandler;
+
         // Populate Settings pane and tie commands to Settings flyouts.
         WinJS.Application.onsettings = function (e) {
             e.detail.applicationcommands = {
@@ -531,6 +536,12 @@
         }
     }
 
+    function charsetChangedHandler(eventInfo) {
+        preGeneratePassword();
+
+        saveProfile();
+    }
+
     function loadProfileFromRemote(profileLB) {
         let roamingSettings = applicationData.roamingSettings;
 
@@ -557,7 +568,21 @@
                 whereLeetLB.value = (settingsArray[9] == undefined || settingsArray[9] == undefined) ? "off" : settingsArray[9];
                 usernameTB.value = (settingsArray[10] == undefined || settingsArray[10] == undefined) ? "" : unescape(settingsArray[10]);
                 counter.value = (settingsArray[11] == undefined || settingsArray[11] == undefined) ? "" : unescape(settingsArray[11]);
-                EditableSelect.setValue(document.getElementById("charset"), (settingsArray[12] == undefined || settingsArray[12] == undefined) ? base93 : unescape(settingsArray[12]));
+                let charsetSelect = document.getElementById("charset");
+                let charsetOpts = charset.options;
+                let found = false;
+                let profileChars = (settingsArray[12] == undefined) ? base93 : unescape(settingsArray[12]);
+                for (let i = 1; i < charsetOpts.length; i++) {
+                    if (charsetOpts[i].text === profileChars) {
+                        charsetOpts[i].selected = true;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    charsetOpts[charsetOpts.length] = new Option(profileChars, "", false, true);
+                }
+
                 passwordPrefix.value = (settingsArray[13] == undefined || settingsArray[13] == undefined) ? "" : unescape(settingsArray[13]);
                 passwordSuffix.value = (settingsArray[14] == undefined || settingsArray[14] == undefined) ? "" : unescape(settingsArray[14]);
                 // End of PasswordMaker Library settings
