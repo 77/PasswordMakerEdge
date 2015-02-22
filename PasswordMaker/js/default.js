@@ -444,7 +444,32 @@
                 let profileIndex = document.getElementById("profileLB").selectedIndex;
                 let selectedProfile = document.getElementById("profileLB").options[profileIndex].text;
 
-                roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)] = exportPreferences() + "|" + document.getElementById("keepCB").checked;
+
+                var charIndex = document.getElementById("charset").selectedIndex;
+                var selectedChar = document.getElementById("charset").options[charIndex].text;
+
+                let savedProfile = new Windows.Storage.ApplicationDataCompositeValue();
+
+                savedProfile.name = selectedProfile;
+                savedProfile.preUrl = preUrl.value;
+                savedProfile.passwdLength = passwdLength.value;
+                savedProfile.protocolCB = protocolCB.checked;
+                savedProfile.domainCB = domainCB.checked;
+                savedProfile.subdomainCB = subdomainCB.checked;
+                savedProfile.pathCB = pathCB.checked;
+                savedProfile.passwdUrl = passwdUrl.value;
+                savedProfile.leetLevelLB = leetLevelLB.value;
+                savedProfile.hashAlgorithmLB = hashAlgorithmLB.value;
+                savedProfile.whereLeetLB = whereLeetLB.value;
+                savedProfile.usernameTB = usernameTB.value;
+                savedProfile.counter = counter.value;
+                savedProfile.selectedChar = selectedChar;
+                savedProfile.passwordPrefix = passwordPrefix.value;
+                savedProfile.passwordSuffix = passwordSuffix.value;
+                savedProfile.keepCB = document.getElementById("keepCB").checked;
+
+
+                roamingSettings.containers.lookup("Profiles").values[selectedProfile] = savedProfile;
             },
             function error() {
             });
@@ -459,7 +484,7 @@
 
         if (selectedProfile != "Default") {
             if (roamingSettings.containers.hasKey("Profiles")) {
-                roamingSettings.containers.lookup("Profiles").values.remove(escape(selectedProfile));
+                roamingSettings.containers.lookup("Profiles").values.remove(selectedProfile);
             }
 
 
@@ -483,11 +508,16 @@
 
                     let iterator = roamingSettings.containers.lookup("Profiles").values.first();
 
-                    while (iterator.hasCurrent) {
-                        let profileName = unescape(iterator.current.key);
-                        removeProfileFromLB(profileName);
-                        document.getElementById("profileLB").add(new Option(profileName));
-                        iterator.moveNext();
+                    if (!iterator.hasCurrent) {
+                        // No profiles found.  Create a default and exit
+                        createDefaultOption();
+                    } else {
+                        while (iterator.hasCurrent) {
+                            let profileName = iterator.current.key;
+                            removeProfileFromLB(profileName);
+                            document.getElementById("profileLB").add(new Option(profileName));
+                            iterator.moveNext();
+                        }
                     }
                 } else {
                     createDefaultOption();
@@ -502,7 +532,6 @@
         } else {
             // No Version information, so don't load data, just the default
             createDefaultOption();
-            saveProfile();
         }
     }
 
@@ -537,13 +566,19 @@
     }
 
     function charsetChangedHandler(eventInfo) {
-        preGeneratePassword();
-
-        saveProfile();
+        if (eventInfo == undefined) {
+            preGeneratePassword();
+            saveProfile();
+        } else if (eventInfo.target.selectedIndex > 0) {
+            // Don't do this when creating a character set
+            preGeneratePassword();
+            saveProfile();
+        }
     }
 
     function loadProfileFromRemote(profileLB) {
         let roamingSettings = applicationData.roamingSettings;
+        let a;
 
         if (roamingSettings.containers.hasKey("Profiles")) {
 
@@ -551,27 +586,27 @@
                 let profileIndex = profileLB.selectedIndex;
                 let selectedProfile = profileLB.options[profileIndex].text;
 
-                let a = unescape(roamingSettings.containers.lookup("Profiles").values[escape(selectedProfile)]);
+                a = roamingSettings.containers.lookup("Profiles").values[selectedProfile];
 
-                let settingsArray = a.split("|");
                 //Keep the existing preURL.  The text to use is saved in passwdUrl and that is not changed if
                 // the option to keep saved is selected.
                 //preUrl.value = (settingsArray[0] == undefined || settingsArray[6] == undefined) ? "" : unescape(settingsArray[0]);
-                passwdLength.value = (settingsArray[1] == undefined || settingsArray[1] == undefined) ? "8" : settingsArray[1];
-                protocolCB.checked = (settingsArray[2] == undefined || settingsArray[2] == undefined) ? false : settingsArray[2] == "true";
-                domainCB.checked = (settingsArray[3] == undefined || settingsArray[3] == undefined) ? true : settingsArray[3] == "true";
-                subdomainCB.checked = (settingsArray[4] == undefined || settingsArray[4] == undefined) ? false : settingsArray[4] == "true";
-                pathCB.checked = (settingsArray[5] == undefined || settingsArray[5] == undefined) ? false : settingsArray[5] == "true";
-                passwdUrl.value = (settingsArray[6] == undefined || settingsArray[6] == undefined) ? "" : unescape(settingsArray[6]);
-                leetLevelLB.value = (settingsArray[7] == undefined || settingsArray[7] == undefined) ? "0" : settingsArray[7];
-                hashAlgorithmLB.value = (settingsArray[8] == undefined || settingsArray[8] == undefined) ? "md5" : settingsArray[8];
-                whereLeetLB.value = (settingsArray[9] == undefined || settingsArray[9] == undefined) ? "off" : settingsArray[9];
-                usernameTB.value = (settingsArray[10] == undefined || settingsArray[10] == undefined) ? "" : unescape(settingsArray[10]);
-                counter.value = (settingsArray[11] == undefined || settingsArray[11] == undefined) ? "" : unescape(settingsArray[11]);
+
+                passwdLength.value = (a == undefined || a.passwdLength == undefined) ? "8" : a.passwdLength;
+                protocolCB.checked = (a == undefined || a.protocolCB == undefined) ? false : a.protocolCB == true;
+                domainCB.checked = (a == undefined || a.domainCB == undefined) ? true : a.domainCB == true;
+                subdomainCB.checked = (a == undefined || a.subdomainCB == undefined) ? false : a.subdomainCB == true;
+                pathCB.checked = (a == undefined || a.pathCB == undefined) ? false : a.pathCB == true;
+                passwdUrl.value = (a == undefined || a.passwdUrl == undefined) ? "" : a.passwdUrl;
+                leetLevelLB.value = (a == undefined || a.leetLevelLB == undefined) ? "0" : a.leetLevelLB;
+                hashAlgorithmLB.value = (a == undefined || a.hashAlgorithmLB == undefined) ? "md5" : a.hashAlgorithmLB;
+                whereLeetLB.value = (a == undefined || a.whereLeetLB == undefined) ? "off" : a.whereLeetLB;
+                usernameTB.value = (a == undefined || a.usernameTB == undefined) ? "" : a.usernameTB;
+                counter.value = (a == undefined || a.counter == undefined) ? "" : a.counter;
                 let charsetSelect = document.getElementById("charset");
                 let charsetOpts = charset.options;
                 let found = false;
-                let profileChars = (settingsArray[12] == undefined) ? base93 : unescape(settingsArray[12]);
+                let profileChars = (a == undefined || a.selectedChar == undefined) ? base93 : a.selectedChar;
                 for (let i = 1; i < charsetOpts.length; i++) {
                     if (charsetOpts[i].text === profileChars) {
                         charsetOpts[i].selected = true;
@@ -583,11 +618,11 @@
                     charsetOpts[charsetOpts.length] = new Option(profileChars, "", false, true);
                 }
 
-                passwordPrefix.value = (settingsArray[13] == undefined || settingsArray[13] == undefined) ? "" : unescape(settingsArray[13]);
-                passwordSuffix.value = (settingsArray[14] == undefined || settingsArray[14] == undefined) ? "" : unescape(settingsArray[14]);
+                passwordPrefix.value = (a == undefined || a.passwordPrefix == undefined) ? "" : a.passwordPrefix;
+                passwordSuffix.value = (a == undefined || a.passwordSuffix == undefined) ? "" : a.passwordSuffix;
                 // End of PasswordMaker Library settings
                 // Additional PasswordMaker Modern settings below
-                document.getElementById("keepCB").checked = (settingsArray[15] == undefined) ? true : settingsArray[15] == "true";
+                document.getElementById("keepCB").checked = (a == undefined || a.keepCB == undefined) ? true : a.keepCB == true;
 
                 if (selectedProfile == "Default") {
                     document.getElementById("keepLabel").style.display = "none";
@@ -604,7 +639,10 @@
                 }
             }
         }
-
+        if (a == undefined) {
+            // profile wasn't found, so save it
+            saveProfile();
+        }
     }
 
     function selectAndLoadProfile(profileLB, preferred) {
