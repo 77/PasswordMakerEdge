@@ -408,7 +408,7 @@
     }
     
     function createDefaultOption() {
-        profileDataList.push({ name: "Default" });
+        profileList.push(WinJS.Binding.as({ name: "Default" }));
     }
 
     function charsetChangedHandler(eventInfo) {
@@ -448,9 +448,15 @@
     }
 
     function loadListViewData() {
-        for (let i = applicationData.roamingSettings.containers.lookup("Profiles").values.first();
-                i.hasCurrent; i.moveNext()) {
-            profileList.push(WinJS.Binding.as({ name: i.current.value.name }));
+        if (applicationData.roamingSettings.containers.hasKey("Profiles")) {
+            for (let i = applicationData.roamingSettings.containers.lookup("Profiles").values.first();
+                    i.hasCurrent; i.moveNext()) {
+                profileList.push(WinJS.Binding.as({ name: i.current.value.name }));
+            }
+        } else {
+            createDefaultOption();
+            currentlySelectedIndex = 0;
+            saveProfile();
         }
     }
 
@@ -510,18 +516,21 @@
                 if (profileName == "Default") {
                     document.getElementById("deleteProfileMenuBtn").disabled = true;
                     document.getElementById("keepLabel").disabled = true;
-                } else {
-                    document.getElementById("deleteProfileMenuBtn").disabled = false;
-                    document.getElementById("keepLabel").disabled = false;
-                }
-
-                if (usedFollowsProfile()) {
-                    preGeneratePassword();
-                } else {
                     // Recalculate the passwdUrl and then password
                     populateURL();
                     WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                } else {
+                    document.getElementById("deleteProfileMenuBtn").disabled = false;
+                    document.getElementById("keepLabel").disabled = false;
+                    if (usedFollowsProfile()) {
+                        preGeneratePassword();
+                    } else {
+                        // Recalculate the passwdUrl and then password
+                        populateURL();
+                        WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                    }
                 }
+
             }
         }
         if (a == undefined) {
@@ -540,9 +549,9 @@
             return false;
         });
 
-        if (preferred) {
+        if (preferred && preferred != "Default" ) {
             profileList.some(function (value, index, array) {
-                if (notFound && value.name == preferred) {
+                if (value.name == preferred) {
                     selected = index;
                     return true;
                 }
