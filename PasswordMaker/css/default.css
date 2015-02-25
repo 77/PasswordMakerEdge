@@ -46,6 +46,6 @@ option.activateEdit{
 	}
 }
 
-.win-item:focus {
+.profileUsed {
     background-color: green;
 }

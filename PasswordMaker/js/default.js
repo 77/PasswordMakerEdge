@@ -34,6 +34,9 @@
     // UI created by us
     var deleteProfileBtn;
     var shareOperation = null;
+    var listView;
+    var listViewControl;
+    var currentlySelectedIndex;
 
  
     app.onactivated = function (args) {
@@ -51,120 +54,16 @@
                     preURL.innerText = storedpreURL;
                 }
 
-                let storedProfileIndex = WinJS.Application.sessionState.profileIndex;
-                if (storedProfileIndex) {
-                    let profileLB = document.getElementById("profileLB");
-                    if (storedProfileIndex < profileLB.options.length && storedProfileIndex > 0) {
-                        profileLB.selectedIndex = storedProfileIndex;
-                    } else {
-                        profileLB.selectedIndex = 1;
-                    }
-                }
-
-                let storedwhereLeetLB = WinJS.Application.sessionState.whereLeetLB;
-                if (storedwhereLeetLB) {
-                    whereLeetLB.value = storedwhereLeetLB;
-                }
-
-                let storedleetLevelLB = WinJS.Application.sessionState.leetLevelLB;
-                if (storedleetLevelLB) {
-                    leetLevelLB.value = storedleetLevelLB;
-                }
-
-                let storedhashAlgorithmLB = WinJS.Application.sessionState.hashAlgorithmLB;
-                if (storedhashAlgorithmLB) {
-                    hashAlgorithmLB.value = storedhashAlgorithmLB;
-                }
-
-                let storedprotocolCB = WinJS.Application.sessionState.protocolCB;
-                if (storedprotocolCB !== undefined) {
-                    protocolCB.status = storedprotocolCB;
-                }
-
-                let storedsubdomainCB = WinJS.Application.sessionState.subdomainCB;
-                if (storedsubdomainCB !== undefined) {
-                    subdomainCB.status = storedsubdomainCB;
-                }
-
-                let storeddomainCB = WinJS.Application.sessionState.domainCB;
-                if (storeddomainCB !== undefined) {
-                    domainCB.status = storeddomainCB;
-                }
-
-                let storedpathCB = WinJS.Application.sessionState.pathCB;
-                if (storedpathCB !== undefined) {
-                    pathCB.status = storedpathCB;
-                }
-
-                let storedpasswdUrl = WinJS.Application.sessionState.passwdUrl;
-                if (storedpasswdUrl) {
-                    passwdUrl.innerText = storedpasswdUrl;
-                }
-
-                if (WinJS.Application.sessionState.passwdLength) {
-                    passwdLength.value = WinJS.Application.sessionState.passwdLength;
-                }
-
-                if (WinJS.Application.sessionState.usernameTB) {
-                    usernameTB.innerText = WinJS.Application.sessionState.usernameTB;
-                }
-
-                if (WinJS.Application.sessionState.counter) {
-                    counter.innerText = WinJS.Application.sessionState.counter;
-                }
-
-                if (WinJS.Application.sessionState.charsetIndex) {
-                    let newCharOptions = WinJS.Application.sessionState.newCharOptions;
-
-                    let charset = document.getElementById("charset");
-                    let charsetOpts = charset.options;
-
-                    if (newCharOptions) {
-                        for (let i = 0; i < newCharOptions.length; i++) {
-                            charsetOpts[charsetOpts.length] = new Option(newCharOptions[i]);
-                        }
-                    }
-
-                    charset.selectedIndex = WinJS.Application.sessionState.charsetIndex;
-                    if (charset.selectedIndex > charset.options.length || charset.selectedIndex < 0) {
-                        charset.selectedIndex = 1;
-                    }
-
-                }
-
-                if (WinJS.Application.sessionState.passwordPrefix) {
-                    passwordPrefix.innerText = WinJS.Application.sessionState.passwordPrefix;
-                }
-
-                if (WinJS.Application.sessionState.passwordSuffix) {
-                    passwordSuffix.innerText = WinJS.Application.sessionState.passwordSuffix;
-                }
-
-                if (WinJS.Application.sessionState.ifHidePasswd !== undefined) {
-                    ifHidePasswd.status = WinJS.Application.sessionState.ifHidePasswd;
-                }
-
-                if (WinJS.Application.sessionState.keep !== undefined) {
-                    document.getElementById("keepCB").status = WinJS.Application.sessionState.keep;
-                }
-
-                preGeneratePassword();
-
             } 
 
-            for (let i = applicationData.roamingSettings.containers.lookup("Profiles").values.first() ;
-                 i.hasCurrent; i.moveNext()) {
-                profileList.push(WinJS.Binding.as({ name: i.current.value.name }));
-            }
+            loadListViewData();
 
             args.setPromise(WinJS.UI.processAll().then(
                 completedSetPromise()
             ));
         } else if (args.detail.kind === activation.ActivationKind.shareTarget) {
-            for (let i = applicationData.roamingSettings.containers.lookup("Profiles").values.first() ;
-                 i.hasCurrent; i.moveNext()) {
-                profileList.push(WinJS.Binding.as({ name: i.current.value.name }));
-            }
+
+            loadListViewData();
 
             args.setPromise(WinJS.UI.processAll().then(
                 completedSetPromise()
@@ -180,10 +79,13 @@
     };
 
     function completedSetPromise() {
+        listView = document.querySelector(".win-listview");
+        listViewControl = listView.winControl;
 
-        let listView = document.querySelector(".win-listview");
-        listView.winControl.addEventListener("loadingstatechanged", listViewStateChangedHandler);
-        listView.winControl.addEventListener("iteminvoked", listItemInvokedHandler, false);
+        selectAndLoadProfile(WinJS.Application.sessionState.profileName);
+
+        listViewControl.addEventListener("loadingstatechanged", listViewStateChangedHandler);
+        listViewControl.addEventListener("iteminvoked", listItemInvokedHandler, false);
 
         deleteProfileBtn = document.getElementById("deleteProfileBtn");
         // These need to be first as loading profiles sometimes clicks this button
@@ -199,10 +101,6 @@
         passwdMaster.addEventListener("keypress", preGeneratePassword, false);
         passwdMaster.addEventListener("input", preGeneratePassword, false);
         
-        let profileLB = document.getElementById("profileLB");
-        profileLB.onchange = profileChangedHandler;
-        addProfiles();
-        selectAndLoadProfile(profileLB);
 
         saveMasterBtn.addEventListener("click", saveMaster, false);
 
@@ -456,8 +354,7 @@
                 roamingSettings.createContainer("Profiles",
                     Windows.Storage.ApplicationDataCreateDisposition.Always);
 
-                let profileIndex = document.getElementById("profileLB").selectedIndex;
-                let selectedProfile = document.getElementById("profileLB").options[profileIndex].text;
+                let selectedProfile = profileList.getAt(currentlySelectedIndex).name;
 
 
                 var charIndex = document.getElementById("charset").selectedIndex;
@@ -492,92 +389,26 @@
     }
 
     function deleteProfileHandler(eventInfo) {
-        let roamingSettings = applicationData.roamingSettings;
-        let profileLB = document.getElementById("profileLB");
-        let profileIndex = profileLB.selectedIndex;
-        let selectedProfile = profileLB.options[profileIndex].text;
+
+        let selectedProfile = profileList.getAt(currentlySelectedIndex).name;
+
 
         if (selectedProfile != "Default") {
             if (roamingSettings.containers.hasKey("Profiles")) {
                 roamingSettings.containers.lookup("Profiles").values.remove(selectedProfile);
             }
 
-
-            // remove option from profileLB and display default profile
-            profileLB.remove(profileIndex);
-            selectAndLoadProfile(profileLB);
+            // remove option from profileList
+            profileList.splice(profileIndex, 1);
+            selectAndLoadProfile();
         } else {
-            document.getElementById("deleteDefaultFlyout").winControl.show(profileLB);
+            document.getElementById("deleteDefaultFlyout").winControl.show(listView);
         }
 
     }
-
-    function addProfiles() {
-
-        if (applicationData.version) {
-
-            if (applicationData.version == 1) {
-                let roamingSettings = applicationData.roamingSettings;
-
-                if (roamingSettings.containers.hasKey("Profiles")) {
-
-                    let iterator = roamingSettings.containers.lookup("Profiles").values.first();
-
-                    if (!iterator.hasCurrent) {
-                        // No profiles found.  Create a default and exit
-                        createDefaultOption();
-                    } else {
-                        while (iterator.hasCurrent) {
-                            let profileName = iterator.current.key;
-                            removeProfileFromLB(profileName);
-                            document.getElementById("profileLB").add(new Option(profileName));
-                            iterator.moveNext();
-                        }
-                    }
-                } else {
-                    createDefaultOption();
-                    // Save the default profile in the remoteSettings
-                    saveProfile();
-                }
-            } else {
-                // We can't handle any version other than 1
-                createDefaultOption();
-                document.getElementById("InvalidDataVersionFlyout").winControl.show(profileLB);
-            }
-        } else {
-            // No Version information, so don't load data, just the default
-            createDefaultOption();
-        }
-    }
-
+    
     function createDefaultOption() {
-        let option = document.createElement("option");
-        option.text = "Default";
-        EditableSelect.selectAddOption(document.getElementById("profileLB"), option);
-        option.selected = "selected";
-    }
-
-    function removeProfileFromLB(profileName) {
-
-        let profileLB = document.getElementById("profileLB");
-
-        for (var i = 0; i < profileLB.length; i++) {
-            if (profileLB.options[i].text == profileName) {
-                profileLB.remove(i);
-                break;
-            }
-        }
-    }
-
-    function profileChangedHandler(eventInfo) {
-        let profileLB = this;
-
-        if (profileLB.selectedIndex > 0) {
-            // Don't load profile if changed to add profile
-            WinJS.Application.sessionState.profileIndex = profileLB.selectedIndex;
-
-            loadProfileFromRemote(profileLB);
-        }
+        profileDataList.push({ name: "Default" });
     }
 
     function charsetChangedHandler(eventInfo) {
@@ -592,23 +423,25 @@
     }
 
     function listItemInvokedHandler(eventInfo) {
-        let profileName = eventInfo.detail.itemPromise._value.data.name;
-        for (let i = 0; i < profileLB.length; i++) {
-            if (profileLB.options[i].text == profileName) {
-                profileLB.selectedIndex = i;
-                loadProfileFromRemote(profileLB);
-                break;
-            }
-        }
+        let oldElement = listViewControl.elementFromIndex(currentlySelectedIndex);
+        oldElement.classList.remove("profileUsed");
+        currentlySelectedIndex = this.winControl.currentItem.index;
+        let newElement = listViewControl.elementFromIndex(currentlySelectedIndex);
+        newElement.classList.add("profileUsed")
+        loadProfileFromRemote(profileList.getAt(currentlySelectedIndex).name);
     }
 
     function listViewStateChangedHandler(eventInfo) {
-        let listViewControl = this.winControl;
         if (listViewControl.loadingState == "complete") {
             profileList.forEach(function (value, index, array) {
                 if (value.name == "Default") {
                     let element = listViewControl.elementFromIndex(index);
-                    element.focus();
+                    if (element) {
+                        element.focus();
+                        currentlySelectedIndex = index;
+                        let newElement = listViewControl.elementFromIndex(currentlySelectedIndex);
+                        newElement.classList.add("profileUsed");
+                    }
                 }
             });
         }
@@ -628,17 +461,15 @@
         loadListViewData();
     }
 
-    function loadProfileFromRemote(profileLB) {
+    function loadProfileFromRemote(profileName) {
         let roamingSettings = applicationData.roamingSettings;
         let a;
 
         if (roamingSettings.containers.hasKey("Profiles")) {
 
-            if (profileLB) {
-                let profileIndex = profileLB.selectedIndex;
-                let selectedProfile = profileLB.options[profileIndex].text;
+            if (profileName) {
 
-                a = roamingSettings.containers.lookup("Profiles").values[selectedProfile];
+                a = roamingSettings.containers.lookup("Profiles").values[profileName];
 
                 //Keep the existing preURL.  The text to use is saved in passwdUrl and that is not changed if
                 // the option to keep saved is selected.
@@ -676,10 +507,12 @@
                 // Additional PasswordMaker Modern settings below
                 document.getElementById("keepCB").checked = (a == undefined || a.keepCB == undefined) ? true : a.keepCB == true;
 
-                if (selectedProfile == "Default") {
-                    document.getElementById("keepLabel").style.display = "none";
+                if (profileName == "Default") {
+                    document.getElementById("deleteProfileMenuBtn").disabled = true;
+                    document.getElementById("keepLabel").disabled = true;
                 } else {
-                    document.getElementById("keepLabel").style.display = "inline-block";
+                    document.getElementById("deleteProfileMenuBtn").disabled = false;
+                    document.getElementById("keepLabel").disabled = false;
                 }
 
                 if (usedFollowsProfile()) {
@@ -697,53 +530,48 @@
         }
     }
 
-    function selectAndLoadProfile(profileLB, preferred) {
-        profileLB.selectedIndex = 1;
-        for (let i = 1; i < profileLB.options.length; i++) {
-            if (profileLB.options[i].text == "Default") {
-                profileLB.selectedIndex = i;
-                break;
+    function selectAndLoadProfile(preferred) {
+        let selected = 0;
+        profileList.some(function (value, index, array) {
+            if (value.name == "Default") {
+                selected = index;
+                return true;
             }
-        }
+            return false;
+        });
 
         if (preferred) {
-            for (let i = 1; i < profileLB.options.length; i++) {
-                if (profileLB.options[i].text == preferred) {
-                    profileLB.selectedIndex = i;
-                    break;
+            profileList.some(function (value, index, array) {
+                if (notFound && value.name == preferred) {
+                    selected = index;
+                    return true;
                 }
-            }
+                return false;
+            });
+
         }
 
-        loadProfileFromRemote(profileLB);
+        let profile = profileList.getAt(selected);
+        WinJS.Application.sessionState.profileName = profile.name;
+        loadProfileFromRemote(profile.name);
 
-        profileLB.oldSelection = profileLB.selectedIndex; // Required for EditableSelect
 
-    }
-
-    function removeAllProfiles(profileLB) {
-        /// Summary
-        /// Removes all profiles except the Add New Profile from the 
-        /// profileLB 
-        while (profileLB.options.length > 1) {
-            profileLB.remove(1);
-        }
     }
 
     // The remote data has changed
     function dataChangedHandler(eventArgs) {
 
         if (applicationData.version == 1) {
-
-            let profileLB = document.getElementById("profileLB");
-
-            // Save the current selection
-            let preferred = profileLB.options[profileLB.selectedIndex].text;
-            removeAllProfiles(profileLB);
-            addProfiles();
-            selectAndLoadProfile(profileLB, preferred);
+            // Prefer to stick to currently selected, 
+            // but default otherwise
+            let preferred = null;
+            let profileIndex = listViewControl.currentItem.index;
+            preferred = profileList.getAt(profileIndex).name;
+            
+            modifyListViewData();
+            selectAndLoadProfile(preferred);
         } else {
-            document.getElementById("InvalidDataVersionFlyout").winControl.show(profileLB);
+            document.getElementById("InvalidDataVersionFlyout").winControl.show(document.querySelector(".win-listview"));
         }
     }
 
@@ -764,6 +592,8 @@
         if (sharedData.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.text)) {
             // Set the preURL to the shared data
             sharedData.getTextAsync().done(function (text) {
+                selectAndLoadProfile();
+
                 preURL.innerText = text;
                 if (!usedFollowsProfile()) {
                     populateURL();
@@ -792,11 +622,7 @@
 
     // Returns true if the currently selected profile is the default
     function isDefaultProfile() {
-        let profileLB = document.getElementById("profileLB");
-        let profileIndex = profileLB.selectedIndex;
-        let selectedProfile = profileLB.options[profileIndex].text;
-
-        return (selectedProfile === "Default");
+        return profileList.getAt(currentlySelectedIndex).name === "Default";
 
     }
 
