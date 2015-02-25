@@ -35,7 +35,7 @@
     var deleteProfileBtn;
     var shareOperation = null;
 
-
+ 
     app.onactivated = function (args) {
 
         if (args.detail.kind === activation.ActivationKind.launch) {
@@ -152,10 +152,20 @@
 
             } 
 
+            for (let i = applicationData.roamingSettings.containers.lookup("Profiles").values.first() ;
+                 i.hasCurrent; i.moveNext()) {
+                profileList.push(WinJS.Binding.as({ name: i.current.value.name }));
+            }
+
             args.setPromise(WinJS.UI.processAll().then(
                 completedSetPromise()
             ));
         } else if (args.detail.kind === activation.ActivationKind.shareTarget) {
+            for (let i = applicationData.roamingSettings.containers.lookup("Profiles").values.first() ;
+                 i.hasCurrent; i.moveNext()) {
+                profileList.push(WinJS.Binding.as({ name: i.current.value.name }));
+            }
+
             args.setPromise(WinJS.UI.processAll().then(
                 completedSetPromise()
             ));
@@ -170,6 +180,11 @@
     };
 
     function completedSetPromise() {
+
+        let listView = document.querySelector(".win-listview");
+        listView.winControl.addEventListener("loadingstatechanged", listViewStateChangedHandler);
+        listView.winControl.addEventListener("iteminvoked", listItemInvokedHandler, false);
+
         deleteProfileBtn = document.getElementById("deleteProfileBtn");
         // These need to be first as loading profiles sometimes clicks this button
         deleteProfileBtn.addEventListener("click", deleteProfileHandler, false);
@@ -576,6 +591,43 @@
         }
     }
 
+    function listItemInvokedHandler(eventInfo) {
+        let profileName = eventInfo.detail.itemPromise._value.data.name;
+        for (let i = 0; i < profileLB.length; i++) {
+            if (profileLB.options[i].text == profileName) {
+                profileLB.selectedIndex = i;
+                loadProfileFromRemote(profileLB);
+                break;
+            }
+        }
+    }
+
+    function listViewStateChangedHandler(eventInfo) {
+        let listViewControl = this.winControl;
+        if (listViewControl.loadingState == "complete") {
+            profileList.forEach(function (value, index, array) {
+                if (value.name == "Default") {
+                    let element = listViewControl.elementFromIndex(index);
+                    element.focus();
+                }
+            });
+        }
+    }
+
+    function loadListViewData() {
+        for (let i = applicationData.roamingSettings.containers.lookup("Profiles").values.first();
+                i.hasCurrent; i.moveNext()) {
+            profileList.push(WinJS.Binding.as({ name: i.current.value.name }));
+        }
+    }
+
+    function modifyListViewData() {
+        while (profileList.length > 0) {
+            profileList.pop();
+        }
+        loadListViewData();
+    }
+
     function loadProfileFromRemote(profileLB) {
         let roamingSettings = applicationData.roamingSettings;
         let a;
@@ -758,5 +810,28 @@
     }
 
     WinJS.Application.addEventListener("shareready", shareReady, false);
+
+    var dataArray = [
+{ name: "Basic banana", text: "Low-fat frozen yogurt", picture: "images/60banana.png" },
+{ name: "Banana blast", text: "Ice cream", picture: "images/60banana.png" },
+{ name: "Brilliant banana", text: "Frozen custard", picture: "images/60banana.png" },
+{ name: "Orange surprise", text: "Sherbet", picture: "images/60orange.png" },
+{ name: "Original orange", text: "Sherbet", picture: "images/60orange.png" },
+{ name: "Vanilla", text: "Ice cream", picture: "images/60vanilla.png" },
+{ name: "Very vanilla", text: "Frozen custard", picture: "images/60vanilla.png" },
+{ name: "Marvelous mint", text: "Gelato", picture: "images/60mint.png" },
+{ name: "Succulent strawberry", text: "Sorbet", picture: "images/60strawberry.png" }
+    ];
+
+    var dataList = new WinJS.Binding.List(dataArray);
+    var profileList = new WinJS.Binding.List();
+
+    var publicMembers =
+        {
+            profileList: profileList
+        };
+
+    WinJS.Namespace.define("ProfileData", publicMembers);
+
     app.start();
 })();

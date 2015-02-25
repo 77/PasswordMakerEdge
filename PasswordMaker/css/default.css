@@ -45,3 +45,7 @@ option.activateEdit{
 		margin-left:60px;
 	}
 }
+
+.win-item:focus {
+    background-color: green;
+}

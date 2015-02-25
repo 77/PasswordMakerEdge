@@ -42,104 +42,126 @@
                 <label class="noWrap" style="display:none;"><input type="checkbox" id="ifHidePasswd" />Hide password (Highlight to view)</label>
             </span>
         </p>
-
-        <fieldset id="profileSet">
-            <legend>Profile</legend>
-            <label class="noWrap">
-                <select id="profileLB" name="profile" class="editable">
-                    <option value="!!!edit!!!" class="activateEdit">New Profile</option>
-                </select>
-            </label>
-            <button id="deleteProfileBtn">&#xe107;</button>
-            <div id="deleteDefaultFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Cannot delete Default}">
-                Cannot delete "Default" profile
+        <section aria-label="Profile Select" role="main" id="profileSelectSection">
+            <div id="profileItemTemplate" class="profileItemClass" data-win-control="WinJS.Binding.Template">
+                <h4 data-win-bind="innerText : name"></h4>
             </div>
-            <div id="InvalidDataVersionFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Application Version too high}">
-                Stored Application Data version is too high.  Please Upgrade this app.
+            <div id="profileSelectLV" data-win-control="WinJS.UI.ListView"
+                 data-win-options="{layout: {type: WinJS.UI.GridLayout},
+                                    itemDataSource : ProfileData.profileList.dataSource,
+                                    itemTemplate : select('#profileItemTemplate'),
+                                    selectionMode : 'single'}">
             </div>
-        </fieldset>
-		<fieldset id="urlparts">
-		<legend>URL Components</legend>
+        </section>
+        <section aria-label="Profile Details" role="main">
+            <fieldset id="profileSet">
+                <legend>Profile</legend>
+                <label class="noWrap">
+                    <select id="profileLB" name="profile" class="editable">
+                        <option value="!!!edit!!!" class="activateEdit">New Profile</option>
+                    </select>
+                </label>
+                <button id="deleteProfileBtn">&#xe107;</button>
+                <div id="deleteDefaultFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Cannot delete Default}">
+                    Cannot delete "Default" profile
+                </div>
+                <div id="InvalidDataVersionFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Application Version too high}">
+                    Stored Application Data version is too high.  Please Upgrade this app.
+                </div>
+            </fieldset>
+            <fieldset id="urlparts">
+                <legend>URL Components</legend>
 
-        <p>
-			<label class="noWrap">Input URL
-              <input id="preURL" type="text" />
-			</label>
-			<button id="copyFromClipboard">&#xe16d;</button>
-		</p>
-		<p>
-		<label class="noWrap"><input type="checkbox" id="protocolCB" />Protocol</label>
-		<label class="noWrap"><input type="checkbox" id="subdomainCB" />Subdomain(s)</label>
-		<label class="noWrap"><input type="checkbox" id="domainCB"  status="checked"/>Domain</label>
-		<label class="noWrap"><input type="checkbox" id="pathCB" />Port, path, anchor, query parameters</label>
-		</p>
-		<p>
-			<label class="noWrap" >Using text <input id="passwdUrl" type="text" /></label>
-			<label class="noWrap" id="keepLabel" title="Keep with Profile"><input type="checkbox" id="keepCB"> Keep</label>
-		</p>
-		</fieldset>
-		<fieldset>
-			<legend>Encryption</legend>
-		<p><label class="noWrap">Use l33t
-		<select class="dropmenu" id="whereLeetLB">
-			<option value="off">not at all</option>
-			<option value="before-hashing">before generating password</option>
-			<option value="after-hashing">after generating password</option>
-			<option value="both">before and after generating password</option>
-		</select></label>
-		<label class="noWrap">l33t level
-		<select class="dropmenu" id="leetLevelLB">
-<option value="0">1</option>
-<option value="1">2</option>
-<option value="2">3</option>
-<option value="3">4</option>
-<option value="4">5</option>
-<option value="5">6</option>
-<option value="6">7</option>
-<option value="7">8</option>
-<option value="8">9</option>
-</select></label>
-		<label class="noWrap">Hash Algorithm
-		<select class="dropmenu" id="hashAlgorithmLB">
-<option value="md4">MD4</option>
-<option value="hmac-md4">HMAC-MD4</option>
-<option value="md5">MD5</option>
-<option value="md5_v6">MD5 Version 0.6</option>
-<option value="hmac-md5">HMAC-MD5</option>
-<option value="hmac-md5_v6">HMAC-MD5 Version 0.6</option>
-<option value="sha1">SHA-1</option>
-<option value="hmac-sha1">HMAC-SHA-1</option>
-<option value="sha256">SHA-256</option>
-<option value="hmac-sha256_fix">HMAC-SHA-256</option>
-<option value="hmac-sha256">HMAC-SHA-256 Version 1.5.1</option>
-<option value="rmd160">RIPEMD-160</option>
-<option value="hmac-rmd160">HMAC-RIPEMD-160</option>
-</select></label>
-		</p></fieldset>
-		<fieldset>
-			<legend>Modifiers</legend>
-			<p>
-				<label class="noWrap">Length <input class="standard" id="passwdLength" maxlength="3" size="3" value="12"/></label>
-				<label class="noWrap">Username <input class="standard" id="usernameTB"/></label>
-				<label class="noWrap">Modifier <input class="standard" id="counter"/></label>
-				<label class="noWrap">Prefix <input class="standard" id="passwordPrefix" /></label>
-				<label class="noWrap">Suffix <input class="standard" id="passwordSuffix" /></label>
-			</p>
-			<p>
-				<label>Characters 
-					<select id="charset" class="editable">
-						<option value="!!!edit!!!" class="activateEdit">Edit Character Set</option>
-						<option selected="selected">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
-						<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</option>
-						<option>0123456789abcdef</option>
-						<option>0123456789</option>
-						<option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</option>
-						<option>`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
-					</select>
-				</label>
-				<span id="charMinWarning" style="display: none;">Two character minimum required</span>
-			</p>
-		</fieldset>
+                <p>
+                    <label class="noWrap">
+                        Input URL
+                        <input id="preURL" type="text" />
+                    </label>
+                    <button id="copyFromClipboard">&#xe16d;</button>
+                </p>
+                <p>
+                    <label class="noWrap"><input type="checkbox" id="protocolCB" />Protocol</label>
+                    <label class="noWrap"><input type="checkbox" id="subdomainCB" />Subdomain(s)</label>
+                    <label class="noWrap"><input type="checkbox" id="domainCB" status="checked" />Domain</label>
+                    <label class="noWrap"><input type="checkbox" id="pathCB" />Port, path, anchor, query parameters</label>
+                </p>
+                <p>
+                    <label class="noWrap">Using text <input id="passwdUrl" type="text" /></label>
+                    <label class="noWrap" id="keepLabel" title="Keep with Profile"><input type="checkbox" id="keepCB"> Keep</label>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Encryption</legend>
+                <p>
+                    <label class="noWrap">
+                        Use l33t
+                        <select class="dropmenu" id="whereLeetLB">
+                            <option value="off">not at all</option>
+                            <option value="before-hashing">before generating password</option>
+                            <option value="after-hashing">after generating password</option>
+                            <option value="both">before and after generating password</option>
+                        </select>
+                    </label>
+                    <label class="noWrap">
+                        l33t level
+                        <select class="dropmenu" id="leetLevelLB">
+                            <option value="0">1</option>
+                            <option value="1">2</option>
+                            <option value="2">3</option>
+                            <option value="3">4</option>
+                            <option value="4">5</option>
+                            <option value="5">6</option>
+                            <option value="6">7</option>
+                            <option value="7">8</option>
+                            <option value="8">9</option>
+                        </select>
+                    </label>
+                    <label class="noWrap">
+                        Hash Algorithm
+                        <select class="dropmenu" id="hashAlgorithmLB">
+                            <option value="md4">MD4</option>
+                            <option value="hmac-md4">HMAC-MD4</option>
+                            <option value="md5">MD5</option>
+                            <option value="md5_v6">MD5 Version 0.6</option>
+                            <option value="hmac-md5">HMAC-MD5</option>
+                            <option value="hmac-md5_v6">HMAC-MD5 Version 0.6</option>
+                            <option value="sha1">SHA-1</option>
+                            <option value="hmac-sha1">HMAC-SHA-1</option>
+                            <option value="sha256">SHA-256</option>
+                            <option value="hmac-sha256_fix">HMAC-SHA-256</option>
+                            <option value="hmac-sha256">HMAC-SHA-256 Version 1.5.1</option>
+                            <option value="rmd160">RIPEMD-160</option>
+                            <option value="hmac-rmd160">HMAC-RIPEMD-160</option>
+                        </select>
+                    </label>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Modifiers</legend>
+                <p>
+                    <label class="noWrap">Length <input class="standard" id="passwdLength" maxlength="3" size="3" value="12" /></label>
+                    <label class="noWrap">Username <input class="standard" id="usernameTB" /></label>
+                    <label class="noWrap">Modifier <input class="standard" id="counter" /></label>
+                    <label class="noWrap">Prefix <input class="standard" id="passwordPrefix" /></label>
+                    <label class="noWrap">Suffix <input class="standard" id="passwordSuffix" /></label>
+                </p>
+                <p>
+                    <label>
+                        Characters
+                        <select id="charset" class="editable">
+                            <option value="!!!edit!!!" class="activateEdit">Edit Character Set</option>
+                            <option selected="selected">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
+                            <option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</option>
+                            <option>0123456789abcdef</option>
+                            <option>0123456789</option>
+                            <option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</option>
+                            <option>`~!@#$%^&*()_-+={}|[]\:&quot;;'&lt;>?,./</option>
+                        </select>
+                    </label>
+                    <span id="charMinWarning" style="display: none;">Two character minimum required</span>
+                </p>
+            </fieldset>
+        </section>
     </div>
 	</body>
 </html>
