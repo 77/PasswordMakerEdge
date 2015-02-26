@@ -163,10 +163,31 @@
             </fieldset>
         </section>
     </div>
+    <div id="newProfileNameFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Enter New Profile Name}">
+		<form onsubmit="return false;">
+			<p>
+                <label for="newProfileNameButton"> 
+                  New Profile Name <br />
+                </label>		
+			    <span id="newProfileNameError" class="Error"></span>
+                <input type="text" id="newProfileNameInput"/>
+		    </p>
+		    <button id="newProfileNameButton">Save Profile</button>
+		</form>
+    </div>
+    <div id="confirmDeleteFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Confirm purchase flyout}">
+        <div id="confirmDeleteDiv">
+            Delete Profile?
+        </div>
+
+        <button id="confirmDeleteButton">
+            Delete
+        </button>
+    </div> 
 	<div data-win-control="WinJS.UI.AppBar">
 		<button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{icon:'add', id:'addProfileMenuBtn', label:'add profile', onclick:null, section:'global', type:'button'}"></button>
 		<button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{icon:'delete', id:'deleteProfileMenuBtn', label:'delete profile', onclick:null, section:'global', type:'button'}"></button>
 		<button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{icon:'edit', id:'editProfileMenuBtn', label:'edit profile', onclick:null, section:'global', type:'button'}"></button>
 	</div>
-	</body>
+    </body>
 </html>

@@ -82,9 +82,7 @@
         listView = document.querySelector(".win-listview");
         listViewControl = listView.winControl;
 
-        selectAndLoadProfile(WinJS.Application.sessionState.profileName);
-
-        listViewControl.addEventListener("loadingstatechanged", listViewStateChangedHandler);
+        listViewControl.addEventListener("loadingstatechanged", loadInitialDataHandler, false);
         listViewControl.addEventListener("iteminvoked", listItemInvokedHandler, false);
 
         deleteProfileBtn = document.getElementById("deleteProfileBtn");
@@ -153,6 +151,14 @@
         // recreated.  When it is recreated, only this field gets copied, so 
         // we need to store it here
         document.getElementById("charset").onchange = charsetChangedHandler;
+
+        document.getElementById("addProfileMenuBtn").addEventListener("click", addProfileMenuBtnHandler);
+        document.getElementById("newProfileNameButton").addEventListener("click", newProfileNameButtonHandler);
+        document.getElementById("newProfileNameFlyout").addEventListener("afterhide", addProfileFlyoutDismissHandler);
+
+        document.getElementById("deleteProfileMenuBtn").addEventListener("click", deleteProfileMenuBtnHandler);
+        document.getElementById("confirmDeleteButton").addEventListener("click", confirmDeleteButtonHandler);
+        
 
         // Populate Settings pane and tie commands to Settings flyouts.
         WinJS.Application.onsettings = function (e) {
@@ -345,17 +351,25 @@
         saveProfile();
     }
 
-    function saveProfile() {
+    function saveProfile(profileName) {
+        saveProfileAsync(profileName);
+    }
+
+    function saveProfileAsync(profileName) {
 
 
-        applicationData.setVersionAsync(1, setVersionHandler).done(
+        let myPromise = applicationData.setVersionAsync(1, setVersionHandler).then(
             function success() {
                 let roamingSettings = applicationData.roamingSettings;
                 roamingSettings.createContainer("Profiles",
                     Windows.Storage.ApplicationDataCreateDisposition.Always);
 
-                let selectedProfile = profileList.getAt(currentlySelectedIndex).name;
-
+                let selectedProfile;
+                if (profileName) {
+                    selectedProfile = profileName;
+                } else {
+                    selectedProfile = profileList.getAt(currentlySelectedIndex).name;
+                }
 
                 var charIndex = document.getElementById("charset").selectedIndex;
                 var selectedChar = document.getElementById("charset").options[charIndex].text;
@@ -385,7 +399,7 @@
             },
             function error() {
             });
-
+        return myPromise;
     }
 
     function deleteProfileHandler(eventInfo) {
@@ -407,8 +421,9 @@
 
     }
     
-    function createDefaultOption() {
-        profileList.push(WinJS.Binding.as({ name: "Default" }));
+    function createProfileAsync(profileName) {
+        profileList.push(WinJS.Binding.as({ name: profileName }));
+        return saveProfileAsync(profileName);
     }
 
     function charsetChangedHandler(eventInfo) {
@@ -423,28 +438,99 @@
     }
 
     function listItemInvokedHandler(eventInfo) {
-        let oldElement = listViewControl.elementFromIndex(currentlySelectedIndex);
-        oldElement.classList.remove("profileUsed");
-        currentlySelectedIndex = this.winControl.currentItem.index;
+        switchSelected(this.winControl.currentItem.index);
+    }
+
+    function switchSelected(newIndex) {
+        if (currentlySelectedIndex != undefined && currentlySelectedIndex != null) {
+            let oldElement = listViewControl.elementFromIndex(currentlySelectedIndex);
+            oldElement.classList.remove("profileUsed");
+        }
+
+        currentlySelectedIndex = newIndex;
         let newElement = listViewControl.elementFromIndex(currentlySelectedIndex);
         newElement.classList.add("profileUsed")
         loadProfileFromRemote(profileList.getAt(currentlySelectedIndex).name);
     }
 
-    function listViewStateChangedHandler(eventInfo) {
+    // Loads the data after the initial startup.
+    // Sets the current profile to that saved in the
+    // session or default otherwise
+    function loadInitialDataHandler(eventInfo) {
         if (listViewControl.loadingState == "complete") {
-            profileList.forEach(function (value, index, array) {
-                if (value.name == "Default") {
-                    let element = listViewControl.elementFromIndex(index);
-                    if (element) {
-                        element.focus();
-                        currentlySelectedIndex = index;
-                        let newElement = listViewControl.elementFromIndex(currentlySelectedIndex);
-                        newElement.classList.add("profileUsed");
-                    }
-                }
-            });
+            selectAndLoadProfile(WinJS.Application.sessionState.profileName);
+            listView.removeEventListener("loadingstatechanged", loadInitialDataHandler, false);
         }
+    }
+
+    function addProfileMenuBtnHandler(eventInfo) {
+        
+        document.getElementById("newProfileNameFlyout").winControl.show(this);
+    }
+
+    function newProfileNameButtonHandler(eventInfo) {
+        let error = false;
+
+        let inputElement = document.getElementById("newProfileNameInput");
+        let enteredString = inputElement.value.trim();
+
+        if (enteredString === "") {
+            document.getElementById("newProfileNameError").innerHTML = "Profile name cannot be blank";
+            inputElement.focus();
+            error = true;
+        } else {
+            // Check to see if a profile of this name exists
+            let exists = profileList.some(function (value, index, array) {
+                return enteredString === value.name;
+            });
+
+            if (exists) {
+                document.getElementById("newProfileNameError").innerHTML = "A profile of that name already exists";
+                inputElement.focus();
+                error = true;
+            }
+        }
+
+        if (!error) {
+            createProfileAsync(enteredString).then(
+                function success(result) {
+                    selectAndLoadProfile(enteredString);
+                },
+                function failure(result) {
+                    document.getElementById("newProfilNameFlyout").winControl.show(document.getElementById("addProfileMenuBtn"));
+                    document.getElementById("newProfileNameError").innerHTML = "Profile could not be saved";
+                    document.getElementById("newProfileNameInput").focus();
+                });
+            document.getElementById("newProfileNameFlyout").winControl.hide();
+        }
+    }
+
+    function addProfileFlyoutDismissHandler(eventInfo) {
+        document.getElementById("newProfileNameInput").value = "";
+        document.getElementById("newProfileNameError").innerHTML = "";
+    }
+
+    function deleteProfileMenuBtnHandler(eventInfo) {
+        let flyout = document.getElementById("confirmDeleteFlyout");
+        document.getElementById("confirmDeleteDiv").innerHtml = "Delete Profile " + profileList.getAt(currentlySelectedIndex).name + "?";
+        flyout.winControl.show(this);
+    }
+
+    function confirmDeleteButtonHandler(eventInfo) {
+        let selectedProfile = profileList.getAt(currentlySelectedIndex).name;
+
+        if (selectedProfile != "Default") {
+            let roamingSettings = applicationData.roamingSettings;
+
+            if (roamingSettings.containers.hasKey("Profiles")) {
+                roamingSettings.containers.lookup("Profiles").values.remove(selectedProfile);
+            }
+
+            // remove option from profileList
+            profileList.splice(currentlySelectedIndex, 1);
+            selectAndLoadProfile();
+        }
+        document.getElementById("confirmDeleteFlyout").winControl.hide();
     }
 
     function loadListViewData() {
@@ -454,9 +540,8 @@
                 profileList.push(WinJS.Binding.as({ name: i.current.value.name }));
             }
         } else {
-            createDefaultOption();
             currentlySelectedIndex = 0;
-            saveProfile();
+            createProfileAsync("Default");
         }
     }
 
@@ -560,11 +645,7 @@
 
         }
 
-        let profile = profileList.getAt(selected);
-        WinJS.Application.sessionState.profileName = profile.name;
-        loadProfileFromRemote(profile.name);
-
-
+        switchSelected(selected);
     }
 
     // The remote data has changed
