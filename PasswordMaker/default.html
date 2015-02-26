@@ -32,6 +32,12 @@
 		<p>
 		    <label class="noWrap">Master Password
             <input id="passwdMaster" type="password" /> <button id="saveMasterBtn" style="display:none; ">Save Master Password</button></label>
+            <label class="noWrap">
+                Input URL
+                <input id="preURL" type="text" />
+            </label>
+            <button id="copyFromClipboard">&#xe16d;</button>
+
             <span class="noWrap">
                 <label class="noWrap">
                     Generated Password
@@ -53,32 +59,24 @@
                                     selectionMode : 'single'}">
             </div>
         </section>
-        <section aria-label="Profile Details" role="main">
-            <fieldset id="profileSet">
+        <section aria-label="Profile Details" role="main" id="profileDetails" style="display:none">
+			<div id="ProfileDetailsHeader">
+ 	<button data-win-control="WinJS.UI.BackButton" id="profileDetailsBackButton"></button>
+	Editing Profile: <span id="ProfileDetailsName"></span>
+	</div>
+           <fieldset id="profileSet" style="display:none">
                 <legend>Profile</legend>
                 <label class="noWrap">
                     <select id="profileLB" name="profile" class="editable">
                         <option value="!!!edit!!!" class="activateEdit">New Profile</option>
                     </select>
                 </label>
-                <button id="deleteProfileBtn">&#xe107;</button>
-                <div id="deleteDefaultFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Cannot delete Default}">
-                    Cannot delete "Default" profile
-                </div>
                 <div id="InvalidDataVersionFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Application Version too high}">
                     Stored Application Data version is too high.  Please Upgrade this app.
                 </div>
             </fieldset>
             <fieldset id="urlparts">
                 <legend>URL Components</legend>
-
-                <p>
-                    <label class="noWrap">
-                        Input URL
-                        <input id="preURL" type="text" />
-                    </label>
-                    <button id="copyFromClipboard">&#xe16d;</button>
-                </p>
                 <p>
                     <label class="noWrap"><input type="checkbox" id="protocolCB" />Protocol</label>
                     <label class="noWrap"><input type="checkbox" id="subdomainCB" />Subdomain(s)</label>
@@ -184,7 +182,7 @@
             Delete
         </button>
     </div> 
-	<div data-win-control="WinJS.UI.AppBar">
+	<div data-win-control="WinJS.UI.AppBar" id="profileEditAppBar">
 		<button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{icon:'add', id:'addProfileMenuBtn', label:'add profile', onclick:null, section:'global', type:'button'}"></button>
 		<button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{icon:'delete', id:'deleteProfileMenuBtn', label:'delete profile', onclick:null, section:'global', type:'button'}"></button>
 		<button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{icon:'edit', id:'editProfileMenuBtn', label:'edit profile', onclick:null, section:'global', type:'button'}"></button>

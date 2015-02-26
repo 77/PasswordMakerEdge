@@ -85,10 +85,6 @@
         listViewControl.addEventListener("loadingstatechanged", loadInitialDataHandler, false);
         listViewControl.addEventListener("iteminvoked", listItemInvokedHandler, false);
 
-        deleteProfileBtn = document.getElementById("deleteProfileBtn");
-        // These need to be first as loading profiles sometimes clicks this button
-        deleteProfileBtn.addEventListener("click", deleteProfileHandler, false);
-
         preURL.addEventListener("change", preURLHandler, false);
         preURL.addEventListener("keypress", preURLHandler, false);
         preURL.addEventListener("input", preURLHandler, false);
@@ -145,20 +141,22 @@
 
         document.getElementById("keepCB").addEventListener("click", keepHandler, false);
 
-        Windows.Storage.ApplicationData.current.addEventListener("datachanged", dataChangedHandler);
+        Windows.Storage.ApplicationData.current.addEventListener("datachanged", dataChangedHandler, false);
 
         // charset is an editable select class that keeps getting deleted and
         // recreated.  When it is recreated, only this field gets copied, so 
         // we need to store it here
         document.getElementById("charset").onchange = charsetChangedHandler;
 
-        document.getElementById("addProfileMenuBtn").addEventListener("click", addProfileMenuBtnHandler);
-        document.getElementById("newProfileNameButton").addEventListener("click", newProfileNameButtonHandler);
-        document.getElementById("newProfileNameFlyout").addEventListener("afterhide", addProfileFlyoutDismissHandler);
+        document.getElementById("addProfileMenuBtn").addEventListener("click", addProfileMenuBtnHandler, false);
+        document.getElementById("newProfileNameButton").addEventListener("click", newProfileNameButtonHandler, false);
+        document.getElementById("newProfileNameFlyout").addEventListener("afterhide", addProfileFlyoutDismissHandler, false);
 
-        document.getElementById("deleteProfileMenuBtn").addEventListener("click", deleteProfileMenuBtnHandler);
-        document.getElementById("confirmDeleteButton").addEventListener("click", confirmDeleteButtonHandler);
+        document.getElementById("deleteProfileMenuBtn").addEventListener("click", deleteProfileMenuBtnHandler, false);
+        document.getElementById("confirmDeleteButton").addEventListener("click", confirmDeleteButtonHandler, false);
         
+        document.getElementById("editProfileMenuBtn").addEventListener("click", editProfileMenuBtnHandler, false);
+        document.getElementById("profileDetailsBackButton").addEventListener("click", profileDetailsBackButtonHandler, false);
 
         // Populate Settings pane and tie commands to Settings flyouts.
         WinJS.Application.onsettings = function (e) {
@@ -531,6 +529,19 @@
             selectAndLoadProfile();
         }
         document.getElementById("confirmDeleteFlyout").winControl.hide();
+    }
+
+    function editProfileMenuBtnHandler(eventInfo) {
+        document.getElementById("profileDetailsBackButton").disabled = false;
+        document.getElementById("ProfileDetailsName").innerHTML = profileList.getAt(currentlySelectedIndex).name;
+        document.getElementById("profileSelectSection").style.display = 'none';
+        document.getElementById("profileDetails").style.display = 'inline';
+        document.getElementById("profileEditAppBar").winControl.hide();
+    }
+
+    function profileDetailsBackButtonHandler(eventInfo) {
+        document.getElementById("profileSelectSection").style.display = 'inline';
+        document.getElementById("profileDetails").style.display = 'none';
     }
 
     function loadListViewData() {
