@@ -46,6 +46,19 @@ option.activateEdit{
 	}
 }
 
+.win-item {
+	width: 160px;
+	height: 40px;
+	text-align:center;
+	vertical-align:  middle;
+	border-style:solid;
+	border-width:thin;
+}
+	
 .profileUsed {
-    background-color: green;
+    background-color: darkgrey;
+    border-width: medium;
+    border-style: inset;
+    -ms-grid-column: 1;
+	font-weight: bolder;
 }
