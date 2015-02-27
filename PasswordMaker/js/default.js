@@ -456,6 +456,7 @@
     // session or default otherwise
     function loadInitialDataHandler(eventInfo) {
         if (listViewControl.loadingState == "complete") {
+            preURL.innerText = WinJS.Application.sessionState.preURL ? WinJS.Application.sessionState.preURL : "";
             selectAndLoadProfile(WinJS.Application.sessionState.profileName);
             listView.removeEventListener("loadingstatechanged", loadInitialDataHandler, false);
         }
@@ -711,12 +712,14 @@
         if (sharedData.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.text)) {
             // Set the preURL to the shared data
             sharedData.getTextAsync().done(function (text) {
-                selectAndLoadProfile();
-
-                preURL.innerText = text;
-                if (!usedFollowsProfile()) {
-                    populateURL();
-                    WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                WinJS.Application.sessionState.preURL = text;
+                if (listViewControl.loadingState === "Complete") {
+                    preURL.innerText = text;
+                    selectAndLoadProfile();
+                    if (!usedFollowsProfile()) {
+                        populateURL();
+                        WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                    }
                 }
                 WinJS.Application.sessionState.preURL = preUrl.value;
 
@@ -726,11 +729,14 @@
         }
         if (sharedData.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.webLink)) {
             sharedData.getWebLinkAsync().done(function (webLink) {
-                preURL.innerText = webLink.rawUri;
-                WinJS.Application.sessionState.preURL = preUrl.value;
-                if (!usedFollowsProfile()) {
-                    populateURL();
-                    WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                WinJS.Application.sessionState.preURL = webLink.rawUri;
+                if (listViewControl.loadingState === "Complete") {
+                    preURL.innerText = webLink.rawUri;
+                    selectAndLoadProfile();
+                    if (!usedFollowsProfile()) {
+                        populateURL();
+                        WinJS.Application.sessionState.passwdUrl = passwdUrl.value;
+                    }
                 }
             }, function (e) {
                 preURL.innerText = "Error Receiving Data from Share";
