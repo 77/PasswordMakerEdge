@@ -534,14 +534,32 @@
     function editProfileMenuBtnHandler(eventInfo) {
         document.getElementById("profileDetailsBackButton").disabled = false;
         document.getElementById("ProfileDetailsName").innerHTML = profileList.getAt(currentlySelectedIndex).name;
-        document.getElementById("profileSelectSection").style.display = 'none';
-        document.getElementById("profileDetails").style.display = 'inline';
+
+        let selectElements = document.getElementsByClassName("profileSelectClass");
+        for (let i = 0; i < selectElements.length; i++) {
+            selectElements[i].style.display = 'none';
+        }
+
+        let editElements = document.getElementsByClassName("profileDisplayClass");
+        for (let i = 0; i < editElements.length; i++) {
+            editElements[i].style.display = 'inline';
+        }
         document.getElementById("profileEditAppBar").winControl.hide();
+        document.getElementById("profileEditAppBar").winControl.disabled = true;
     }
 
     function profileDetailsBackButtonHandler(eventInfo) {
-        document.getElementById("profileSelectSection").style.display = 'inline';
-        document.getElementById("profileDetails").style.display = 'none';
+        let selectElements = document.getElementsByClassName("profileSelectClass");
+        for (let i = 0; i < selectElements.length; i++) {
+            selectElements[i].style.display = 'inline';
+        }
+
+        let editElements = document.getElementsByClassName("profileDisplayClass");
+        for (let i = 0; i < editElements.length; i++) {
+            editElements[i].style.display = 'none';
+        }
+        document.getElementById("profileEditAppBar").winControl.disabled = false;
+
     }
 
     function loadListViewData() {
