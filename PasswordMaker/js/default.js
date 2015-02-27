@@ -437,6 +437,7 @@
 
     function listItemInvokedHandler(eventInfo) {
         switchSelected(this.winControl.currentItem.index);
+        loadProfileFromRemote(profileList.getAt(currentlySelectedIndex).name);
     }
 
     function switchSelected(newIndex) {
@@ -448,7 +449,6 @@
         currentlySelectedIndex = newIndex;
         let newElement = listViewControl.elementFromIndex(currentlySelectedIndex);
         newElement.classList.add("profileUsed")
-        loadProfileFromRemote(profileList.getAt(currentlySelectedIndex).name);
     }
 
     // Loads the data after the initial startup.
@@ -465,8 +465,8 @@
 
     function listViewLoadedHandler(eventInfo) {
         if (listViewControl.loadingState == "complete") {
-            listViewControl.ensureVisible(currentlySelectedIndex);
             switchSelected(currentlySelectedIndex);
+            listViewControl.ensureVisible(currentlySelectedIndex);
         }
     }
 
@@ -558,6 +558,7 @@
     }
 
     function profileDetailsBackButtonHandler(eventInfo) {
+        eventInfo.preventDefault();
         let selectElements = document.getElementsByClassName("profileSelectClass");
         for (let i = 0; i < selectElements.length; i++) {
             selectElements[i].style.display = 'inline';
@@ -684,6 +685,8 @@
         }
 
         switchSelected(selected);
+        loadProfileFromRemote(profileList.getAt(currentlySelectedIndex).name);
+
     }
 
     // The remote data has changed
