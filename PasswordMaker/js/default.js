@@ -335,7 +335,7 @@
 
     function passwordSuffixHandler(eventInfo) {
         preGeneratePassword();
-
+        
         WinJS.Application.sessionState.passwordSuffix = passwordSuffix.value;
         saveProfile();
     }
@@ -459,6 +459,14 @@
             preURL.innerText = WinJS.Application.sessionState.preURL ? WinJS.Application.sessionState.preURL : "";
             selectAndLoadProfile(WinJS.Application.sessionState.profileName);
             listView.removeEventListener("loadingstatechanged", loadInitialDataHandler, false);
+            listView.addEventListener("loadingstatechanged", listViewLoadedHandler, false);
+        }
+    }
+
+    function listViewLoadedHandler(eventInfo) {
+        if (listViewControl.loadingState == "complete") {
+            listViewControl.ensureVisible(currentlySelectedIndex);
+            switchSelected(currentlySelectedIndex);
         }
     }
 
@@ -560,7 +568,7 @@
             editElements[i].style.display = 'none';
         }
         document.getElementById("profileEditAppBar").winControl.disabled = false;
-
+        listViewControl.forceLayout();
     }
 
     function loadListViewData() {
