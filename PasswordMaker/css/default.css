@@ -41,9 +41,13 @@ option.activateEdit{
 
 /* Reduce the left margin in portrait mode */
 @media screen and (orientation:portrait) {
-	.mainContent, .headerClass {
-		margin-left:60px;
-	}
+    .mainContent, .headerClass {
+        margin-left: 60px;
+    }
+
+    .win-back {
+        font-size: smaller;
+    }
 }
 
 .win-item {

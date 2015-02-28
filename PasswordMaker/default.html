@@ -27,7 +27,7 @@
     <script src="/js/default.js"></script>
 </head>
 <body>
-    <button data-win-control="WinJS.UI.BackButton" id="profileDetailsBackButton" class="winBack profileDisplayClass"></button>
+    <button data-win-control="WinJS.UI.BackButton" id="profileDetailsBackButton" class="winBack profileDisplayClass" style="display:none"></button>
     <h1 class="headerClass profileSelectClass">PasswordMaker</h1>
     <div class="headerClass profileDisplayClass" id="profileDisplayHeader">
      <h1 id="ProfileDetailsName"></h1>
@@ -46,7 +46,8 @@
             <span class="noWrap">
                 <label class="noWrap">
                     Generated Password
-                    <input class="standard" type="text" id="passwdGenerated" />
+                    <input class="standard" type="text" id="passwdGenerated" 
+                           disabled="disabled" />
                 </label>
                 <button id="copyToClipboardButton">&#xE16F;</button>
                 <!-- This is controlled from the settings flyout-->

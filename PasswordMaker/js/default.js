@@ -32,7 +32,6 @@
     var applicationData = Windows.Storage.ApplicationData.current;
 
     // UI created by us
-    var deleteProfileBtn;
     var shareOperation = null;
     var listView;
     var listViewControl;
@@ -238,6 +237,9 @@
         let dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
         dataPackage.setText(passwdGenerated.value);
         Windows.ApplicationModel.DataTransfer.Clipboard.setContent(dataPackage);
+        if (shareOperation) {
+            shareOperation.reportCompleted();
+        }
     }
 
     function passwdMasterHandler(eventInfo) {
@@ -720,6 +722,11 @@
     function shareReady(eventArgs) {
         let sharedData = shareOperation.data;
 
+        let headerElements = document.getElementsByClassName("headerClass");
+        for (let i = 0; i < headerElements.length; i++) {
+            headerElements[i].style.display = "none";
+        }
+
         if (sharedData.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.text)) {
             // Set the preURL to the shared data
             sharedData.getTextAsync().done(function (text) {
@@ -735,7 +742,7 @@
                 WinJS.Application.sessionState.preURL = preUrl.value;
 
             }, function (e) {
-                preURL.innerText = "Error Receiving Data from Share";
+                shareOperation.reportError("Error Receiving Data from Share");
             });
         }
         if (sharedData.contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.webLink)) {
@@ -750,7 +757,7 @@
                     }
                 }
             }, function (e) {
-                preURL.innerText = "Error Receiving Data from Share";
+                shareOperation.reportError("Error Receiving Data from Share");
             });
         }
 
