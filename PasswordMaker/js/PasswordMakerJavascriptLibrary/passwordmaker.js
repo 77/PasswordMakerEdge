@@ -202,16 +202,47 @@ function generatepassword(hashAlgorithm, key, data, whereToUseL33t, l33tLevel, p
 }
 function populateURL() {
     temp = preUrl.value.match("([^://]*://)?([^:/]*)([^#]*)"); if (!temp) { temp = ['', '', '', '']; }
-    var domainSegments = temp[2].split("."); while (domainSegments.length < 3) { domainSegments.unshift(''); }
-    var displayMe = ''; var displayMeTemp = protocolCB.checked ? temp[1] : ''; if (subdomainCB.checked) {
-        for (var i = 0; i < domainSegments.length - 2; i++) {
-            displayMe += domainSegments[i]; if (i + 1 < domainSegments.length - 2)
-                displayMe += ".";
+    var displayMe = '';
+    var displayMeTemp = protocolCB.checked ? temp[1] : '';
+    let domainTypeIndex = 0;  // Index of special domain start
+
+    // Fix to include special domains
+    if (SpecialDomains.domainList.some(function (item, index, array) {
+        
+        // Prefix the code stored in the db with a .
+        let domainType = "." + item.name;
+        // Check if this string is at the end of the domain
+        domainTypeIndex = temp[2].length - domainType.length;
+        if (domainTypeIndex <= 0) return false;
+        return temp[2].indexOf(domainType, domainTypeIndex) === domainTypeIndex;
+    })) {
+
+
+        // Go back 1 dot from the domain type to include the whole domain name
+        let domainSplitIndex = temp[2].lastIndexOf(".", domainTypeIndex - 1);
+
+        if (subdomainCB.checked && domainSplitIndex > 0) {
+            displayMe += temp[2].slice(0, domainSplitIndex);
         }
-    }
-    if (domainCB.checked) {
-        if (displayMe != "" && displayMe[displayMe.length - 1] != ".")
-            displayMe += "."; displayMe += domainSegments[domainSegments.length - 2] + "." + domainSegments[domainSegments.length - 1];
+
+        if (domainCB.checked) {
+            if (displayMe != "" && displayMe[displayMe.length - 1] != ".")
+                displayMe += ".";
+            displayMe += temp[2].slice(domainSplitIndex + 1);
+        }
+        // End of fix
+    } else {
+        var domainSegments = temp[2].split("."); while (domainSegments.length < 3) { domainSegments.unshift(''); }
+        if (subdomainCB.checked) {
+            for (var i = 0; i < domainSegments.length - 2; i++) {
+                displayMe += domainSegments[i]; if (i + 1 < domainSegments.length - 2)
+                    displayMe += ".";
+            }
+        }
+        if (domainCB.checked) {
+            if (displayMe != "" && displayMe[displayMe.length - 1] != ".")
+                displayMe += "."; displayMe += domainSegments[domainSegments.length - 2] + "." + domainSegments[domainSegments.length - 1];
+        }
     }
     displayMe = displayMeTemp + displayMe; if (pathCB.checked)
         displayMe += temp[3]; passwdUrl.value = displayMe; preGeneratePassword();
