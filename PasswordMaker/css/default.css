@@ -26,8 +26,8 @@
     margin-bottom: 10px;
 }
 
-.noWrap {
-	white-space:nowrap;	
+label {
+    display: inline-block;
 }
 
 select {
