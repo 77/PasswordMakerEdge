@@ -22,8 +22,9 @@
         </div>
 		<div class="win-content">
 			<div class="win-settings-section">
-				<div id="displayToggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{checked:true, title:'Display Generated Password'}"></div>
+                <div id="displayToggle" data-win-control="BrandonUtils.Controls.AppSettingToggle" data-win-options="{title:'Hide Generated Password', settingName: 'displayGenerated', enableRoaming: true}"></div>
 			</div>
+            <!-- For Future releases -->
             <div class="win-settings-section" style="display:none;">
                 <label>Save Master Password</label>
                 <select aria-label="Example select control" id="saveMasterLocationLB">
@@ -34,7 +35,6 @@
             </div>
             <div class="win-settings-section">
                 <button id="ResetDataBtn">Reset App Data</button>
-                <!--<div id="ResetDataConfirmFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Reset Data Confirm}">-->
                 <div id="ResetDataConfirmDiv" style="display:none;">
                     <div class="warning">This will delete all your settings and profile data</div>
                     <div><button id="ResetConfirmBtn">OK</button> <button id="ResetCancelBtn">Cancel</button></div>
