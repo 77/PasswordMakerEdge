@@ -546,11 +546,18 @@
 
     function editProfileMenuBtnHandler(eventInfo) {
         document.getElementById("profileDetailsBackButton").disabled = false;
-        document.getElementById("ProfileDetailsName").innerHTML = profileList.getAt(currentlySelectedIndex).name;
+        let profileName = profileList.getAt(currentlySelectedIndex).name;
+        document.getElementById("ProfileDetailsName").innerHTML = profileName;
 
         let selectElements = document.getElementsByClassName("profileSelectClass");
         for (let i = 0; i < selectElements.length; i++) {
             selectElements[i].style.display = 'none';
+        }
+
+        if (profileName === "Default") {
+            document.getElementById("keepLabel").style.display = 'none';
+        } else {
+            document.getElementById("keepLabel").style.display = 'inline-block';
         }
 
         let editElements = document.getElementsByClassName("profileDisplayClass");

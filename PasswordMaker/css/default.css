@@ -66,3 +66,7 @@ option.activateEdit{
     -ms-grid-column: 1;
 	font-weight: bolder;
 }
+
+.Error {
+    color: red;
+}

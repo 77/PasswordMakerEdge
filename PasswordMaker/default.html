@@ -76,7 +76,7 @@
                         <option value="!!!edit!!!" class="activateEdit">New Profile</option>
                     </select>
                 </label>
-                <div id="InvalidDataVersionFlyout" data-win-control="WinJS.UI.Flyout" aria-label="{Application Version too high}">
+                <div id="InvalidDataVersionFlyout" class="Error" data-win-control="WinJS.UI.Flyout" aria-label="{Application Version too high}">
                     Stored Application Data version is too high.  Please Upgrade this app.
                 </div>
             </fieldset>
@@ -90,7 +90,7 @@
                 </p>
                 <p>
                     <label class="noWrap">Using text <input id="passwdUrl" type="text" /></label>
-                    <label class="noWrap" id="keepLabel" title="Keep with Profile"><input type="checkbox" id="keepCB"> Keep</label>
+                    <label class="noWrap" id="keepLabel" title="Keep with Profile"><input type="checkbox" id="keepCB"> Save text with profile</label>
                 </p>
             </fieldset>
             <fieldset>
@@ -172,7 +172,7 @@
                 <label for="newProfileNameButton"> 
                   New Profile Name <br />
                 </label>		
-			    <span id="newProfileNameError" class="Error"></span>
+			    <div id="newProfileNameError" class="Error"></div>
                 <input type="text" id="newProfileNameInput"/>
 		    </p>
 		    <button id="newProfileNameButton">Save Profile</button>
